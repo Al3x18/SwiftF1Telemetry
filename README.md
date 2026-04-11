@@ -409,7 +409,7 @@ Aligned results:
 
 ## Current Limitations
 
-This package is not yet a full replacement for FastF1 in all scenarios.
+This package is not a full replacement for FastF1 in all scenarios.
 
 Known gaps include:
 
