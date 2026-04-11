@@ -1,27 +1,25 @@
-// swift-tools-version: 6.3
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version: 6.0
 import PackageDescription
 
 let package = Package(
     name: "SwiftF1Telemetry",
+    platforms: [
+        .iOS(.v17),
+        .macOS(.v14),
+    ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "SwiftF1Telemetry",
-            targets: ["SwiftF1Telemetry"]
-        ),
+        .library(name: "SwiftF1Telemetry", targets: ["SwiftF1Telemetry"]),
+        .executable(name: "f1-cli", targets: ["F1CLI"]),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "SwiftF1Telemetry"
+        .target(name: "SwiftF1Telemetry"),
+        .executableTarget(
+            name: "F1CLI",
+            dependencies: ["SwiftF1Telemetry"]
         ),
         .testTarget(
             name: "SwiftF1TelemetryTests",
             dependencies: ["SwiftF1Telemetry"]
         ),
-    ],
-    swiftLanguageModes: [.v6]
+    ]
 )
