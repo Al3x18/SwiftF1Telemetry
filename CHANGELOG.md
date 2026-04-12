@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- platform support documentation covering Apple, Linux, Android, and future Flutter integration
+- portable default cache-directory selection for non-Apple environments
+
+### Changed
+
+- replaced `CryptoKit` with cross-platform `swift-crypto` for deterministic cache-key hashing
+- made public session and telemetry models easier to bridge by adding `Codable` conformance
+- clarified the repository direction toward a portable Swift core with future Android bridge layers
+
+### Tested
+
+- added codable round-trip coverage for public session and telemetry models
+
 ## [0.1.1] - 2026-04-12
 
 ### Added
