@@ -12,6 +12,7 @@ Many telemetry workflows today depend on Python tooling or server-side preproces
 
 - in iOS apps
 - in macOS apps
+- in Linux-oriented Swift tools
 - in tests
 - in command-line tools
 
@@ -38,6 +39,8 @@ The long-term goal is to make high-quality F1 telemetry analysis possible in Swi
 - iOS 17+
 - macOS 14+
 
+The core package is also being prepared for non-Apple Swift toolchains, especially Linux and future Android-oriented Swift builds.
+
 ## Package Layout
 
 ```text
@@ -48,7 +51,8 @@ SwiftF1Telemetry/
 ├─ docs/
 │  ├─ overview.md
 │  ├─ api.md
-│  └─ telemetry-data.md
+│  ├─ telemetry-data.md
+│  └─ platform-support.md
 ├─ Sources/
 │  ├─ SwiftF1Telemetry/
 │  │  ├─ Public/
@@ -142,6 +146,8 @@ Networking is handled by `URLSession` with async/await and retry support.
 
 Raw payloads are cached to disk using deterministic cache keys.
 
+Cache filenames are generated with a cross-platform hashing implementation so the same cache-key logic can be reused outside Apple-only environments.
+
 The public configuration supports multiple cache policies:
 
 - `.disabled`: no size limit
@@ -192,6 +198,8 @@ Known gaps include:
 - pit in/out and session interruption handling is still simpler than FastF1
 - interpolation behavior is currently minimal
 - some edge-case laps may still differ from FastF1 outside the validated path
+- Linux support still needs broader automated validation
+- Android support is still at the core-portability stage rather than app-integration stage
 
 ## Legal Notes
 
@@ -214,6 +222,9 @@ Short-term priorities:
 Long-term priorities:
 
 - API stabilization
+- Linux CI coverage
+- Android bridge layer
+- Flutter plugin integration on top of native bridges
 - richer comparison APIs
 - SwiftUI sample integration
 - broader telemetry processing utilities
