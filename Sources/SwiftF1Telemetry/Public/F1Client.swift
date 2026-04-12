@@ -44,7 +44,7 @@ public final class F1Client: Sendable {
 
         /// Default configuration used by `F1Client()`.
         public static let `default` = Configuration(
-            cacheDirectory: FileManager.default.temporaryDirectory.appendingPathComponent("SwiftF1TelemetryCache"),
+            cacheDirectory: PlatformPaths.defaultCacheDirectory(named: "SwiftF1Telemetry"),
             cacheMode: .minimum,
             requestTimeout: 15,
             maxRetries: 1,
