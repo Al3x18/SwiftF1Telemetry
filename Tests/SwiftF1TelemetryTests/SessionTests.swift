@@ -4,7 +4,7 @@ import Testing
 @Test func sessionTypeRawValuesAndFastestLapSelection() async throws {
     #expect(SessionType.qualifying.rawValue == "Q")
 
-    let client = F1Client(backend: MockBackend())
+    let client = F1Client(backend: MockBackend(), cacheStore: MockCacheStore())
     let session = try await client.session(year: 2026, meeting: "Monza", session: .qualifying)
     let lap = try await session.fastestLap(driver: "16")
 

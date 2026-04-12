@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-04-12
+
+### Added
+
+- Public `F1Client.Configuration.CacheMode` with built-in cache size profiles
+- Public `F1Client.clearCache()` API for deleting all cached raw payloads
+- Dedicated telemetry consumer guide in `docs/telemetry-data.md`
+- Inline Quick Help documentation for the public client, session, and telemetry APIs
+
+### Changed
+
+- Default cache policy is now `.minimum`, which keeps up to `50 MB` of cached data
+- Documentation is now split across `docs/overview.md`, `docs/api.md`, and `docs/telemetry-data.md`
+- API docs now describe cache configuration and cache clearing behavior
+- Runtime version string was updated to `0.1.1`
+
+### Tested
+
+- Added coverage for cache size policy behavior
+- Added coverage for clearing the cache through the public client API
+- Full test suite passes with the updated API and documentation
+
 ## [0.1.0] - 2026-04-11
 
 ### Added

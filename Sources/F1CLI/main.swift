@@ -20,8 +20,11 @@ struct F1CLI {
             print("Unknown session code '\(sessionCode)'. Use FP1, FP2, FP3, SQ, S, Q, or R.")
             return
         }
+        
+        var configuration = F1Client.Configuration.default
+        configuration.cacheMode = .medium
 
-        let client = F1Client()
+        let client = F1Client(configuration: configuration)
 
         do {
             let session = try await client.session(year: year, meeting: meeting, session: sessionType)

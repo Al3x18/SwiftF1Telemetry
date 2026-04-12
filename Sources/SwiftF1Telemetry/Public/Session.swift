@@ -1,7 +1,10 @@
 import Foundation
 
+/// A resolved Formula 1 session that can provide laps and telemetry.
 public struct Session: Sendable {
+    /// Stable reference information for the resolved session.
     public let ref: SessionRef
+    /// Human-readable session metadata such as meeting and circuit names.
     public let metadata: SessionMetadata
 
     private let backend: BackendProtocol
@@ -37,11 +40,13 @@ public struct Session: Sendable {
         self.distanceCalculator = distanceCalculator
     }
 
+    /// Returns the currently parsed laps for this session.
     public func laps() async throws -> [Lap] {
         let data = try await backend.fetchTimingData(for: ref)
         return try timingParser.parseLaps(from: data).map { $0.toPublicLap() }
     }
 
+    /// Returns the fastest accurate lap for the specified driver number, if one exists.
     public func fastestLap(driver: String) async throws -> Lap? {
         let driverLaps = try await laps()
             .filter { $0.driverNumber == driver && $0.isAccurate }
@@ -58,6 +63,7 @@ public struct Session: Sendable {
         }
     }
 
+    /// Builds merged telemetry for the provided lap.
     public func telemetry(for lap: Lap) async throws -> TelemetryTrace {
         async let carData = backend.fetchCarData(for: ref)
         async let positionData = backend.fetchPositionData(for: ref)

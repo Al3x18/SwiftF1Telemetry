@@ -1,8 +1,12 @@
 import Foundation
 
+/// A telemetry trace for a specific driver and lap.
 public struct TelemetryTrace: Sendable {
+    /// Driver racing number.
     public let driverNumber: String
+    /// Lap number associated with these samples.
     public let lapNumber: Int
+    /// Ordered telemetry samples for the lap.
     public let samples: [TelemetrySample]
 
     public init(driverNumber: String, lapNumber: Int, samples: [TelemetrySample]) {
@@ -12,21 +16,37 @@ public struct TelemetryTrace: Sendable {
     }
 }
 
+/// A single telemetry sample containing car data, position data, and derived values.
 public struct TelemetrySample: Sendable, Hashable {
+    /// Elapsed time on the session telemetry clock, in seconds.
     public let sessionTime: TimeInterval
+    /// Elapsed time since the start of the selected lap, in seconds.
     public let lapTime: TimeInterval
+    /// Car speed in km/h when available.
     public let speed: Double?
+    /// Engine RPM when available.
     public let rpm: Double?
+    /// Throttle value when available.
     public let throttle: Double?
+    /// Brake state when available.
     public let brake: Bool?
+    /// Raw DRS state when available.
     public let drs: Int?
+    /// Gear number when available.
     public let gear: Int?
+    /// Track X coordinate when available.
     public let x: Double?
+    /// Track Y coordinate when available.
     public let y: Double?
+    /// Track Z coordinate when available.
     public let z: Double?
+    /// Upstream position status such as `OnTrack` when available.
     public let status: String?
+    /// Accumulated lap distance in meters when available.
     public let distance: Double?
+    /// Normalized progress through the lap when available.
     public let relativeDistance: Double?
+    /// Describes whether the sample originated from car data, position data, or merged/interpolated output.
     public let source: SampleSource
 
     public init(
@@ -64,6 +84,7 @@ public struct TelemetrySample: Sendable, Hashable {
     }
 }
 
+/// Indicates where a telemetry sample originated from.
 public enum SampleSource: String, Sendable, Codable {
     case car
     case position
