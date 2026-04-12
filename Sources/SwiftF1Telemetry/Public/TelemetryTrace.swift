@@ -1,7 +1,7 @@
 import Foundation
 
 /// A telemetry trace for a specific driver and lap.
-public struct TelemetryTrace: Sendable {
+public struct TelemetryTrace: Sendable, Codable {
     /// Driver racing number.
     public let driverNumber: String
     /// Lap number associated with these samples.
@@ -17,7 +17,7 @@ public struct TelemetryTrace: Sendable {
 }
 
 /// A single telemetry sample containing car data, position data, and derived values.
-public struct TelemetrySample: Sendable, Hashable {
+public struct TelemetrySample: Sendable, Hashable, Codable {
     /// Elapsed time on the session telemetry clock, in seconds.
     public let sessionTime: TimeInterval
     /// Elapsed time since the start of the selected lap, in seconds.
