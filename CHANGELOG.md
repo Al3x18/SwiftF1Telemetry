@@ -11,6 +11,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 - platform support documentation covering Apple, Linux, Android, and future Flutter integration
 - portable default cache-directory selection for non-Apple environments
+- `f1-cli` `clear-cache` / `--clear-cache` subcommand that calls `F1Client.clearCache()`
 
 ### Changed
 
