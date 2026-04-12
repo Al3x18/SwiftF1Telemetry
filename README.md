@@ -46,7 +46,7 @@ Add the package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/<your-org>/SwiftF1Telemetry.git", from: "0.1.1")
+    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.1.1")
 ]
 ```
 
@@ -125,7 +125,7 @@ This package follows the standard Swift Package Manager versioning model:
 Example dependency declaration:
 
 ```swift
-.package(url: "https://github.com/<your-org>/SwiftF1Telemetry.git", from: "0.1.1")
+.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.1.1")
 ```
 
 `Package.swift` does not contain a version field, and that is correct for Swift packages.
