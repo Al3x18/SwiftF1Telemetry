@@ -5,8 +5,26 @@ import SwiftF1Telemetry
 struct F1CLI {
     static func main() async {
         let arguments = CommandLine.arguments
+
+        if arguments.count >= 2 {
+            let first = arguments[1]
+            if first == "clear-cache" || first == "--clear-cache" {
+                var configuration = F1Client.Configuration.default
+                configuration.cacheMode = .medium
+                let client = F1Client(configuration: configuration)
+                do {
+                    try await client.clearCache()
+                    print("Cache cleared.")
+                } catch {
+                    print("Failed to clear cache: \(error)")
+                }
+                return
+            }
+        }
+
         guard arguments.count >= 4 else {
             print("Usage: swift run f1-cli <year> <meeting> <session> [driver]")
+            print("       swift run f1-cli clear-cache")
             print("Example: swift run f1-cli 2026 \"Monza\" Q 16")
             return
         }
