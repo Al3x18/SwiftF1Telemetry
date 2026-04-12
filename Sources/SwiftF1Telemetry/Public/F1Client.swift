@@ -48,7 +48,7 @@ public final class F1Client: Sendable {
             cacheMode: .minimum,
             requestTimeout: 15,
             maxRetries: 1,
-            userAgent: "SwiftF1Telemetry/0.1.1"
+            userAgent: "SwiftF1Telemetry/\(SwiftF1TelemetryVersion.current)"
         )
 
         /// Creates a custom client configuration.
