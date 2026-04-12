@@ -11,7 +11,6 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 - platform support documentation covering Apple, Linux, Android, and future Flutter integration
 - portable default cache-directory selection for non-Apple environments
-- `f1-cli` `clear-cache` / `--clear-cache` subcommand that calls `F1Client.clearCache()`
 
 ### Changed
 
@@ -22,6 +21,17 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ### Tested
 
 - added codable round-trip coverage for public session and telemetry models
+
+## [0.1.2] - 2026-04-12
+
+### Changed
+
+- default HTTP `userAgent` in `F1Client.Configuration` is `SwiftF1Telemetry/` plus `SwiftF1TelemetryVersion.current` (single source of truth instead of a duplicated version literal)
+- `docs/api.md` documents the default `userAgent` behavior and its relationship to `SwiftF1TelemetryVersion`
+
+### Added
+
+- `f1-cli` `clear-cache` / `--clear-cache` subcommand that calls `F1Client.clearCache()`
 
 ## [0.1.1] - 2026-04-12
 
