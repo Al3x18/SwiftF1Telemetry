@@ -10,7 +10,7 @@ public enum SessionType: String, Sendable, Codable {
     case race = "R"
 }
 
-public struct SessionRef: Sendable, Hashable {
+public struct SessionRef: Sendable, Hashable, Codable {
     public let year: Int
     public let meeting: String
     public let sessionType: SessionType
@@ -32,7 +32,7 @@ public struct SessionRef: Sendable, Hashable {
     }
 }
 
-public struct SessionMetadata: Sendable, Hashable {
+public struct SessionMetadata: Sendable, Hashable, Codable {
     public let officialName: String
     public let circuitName: String
     public let scheduledStart: Date?

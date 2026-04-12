@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Lap: Sendable, Hashable {
+public struct Lap: Sendable, Hashable, Codable {
     public let driverNumber: String
     public let lapNumber: Int
     public let startSessionTime: TimeInterval

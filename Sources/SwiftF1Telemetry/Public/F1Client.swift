@@ -43,14 +43,8 @@ public final class F1Client: Sendable {
         public var userAgent: String
 
         /// Default configuration used by `F1Client()`.
-        /// Default cache directory is under Application Support (or temporary directory as fallback).
         public static let `default` = Configuration(
-            cacheDirectory: {
-                let base =
-                    FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-                    .first ?? FileManager.default.temporaryDirectory
-                return base.appendingPathComponent("SwiftF1Telemetry", isDirectory: true)
-            }(),
+            cacheDirectory: PlatformPaths.defaultCacheDirectory(named: "SwiftF1Telemetry"),
             cacheMode: .minimum,
             requestTimeout: 15,
             maxRetries: 1,

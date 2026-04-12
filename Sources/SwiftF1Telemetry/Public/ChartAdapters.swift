@@ -20,6 +20,9 @@ public struct TrackPoint: Sendable {
     }
 }
 
+extension ChartPoint: Codable where Value: Codable {}
+extension TrackPoint: Codable {}
+
 public extension TelemetryTrace {
     func speedSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in

@@ -7,21 +7,24 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-04-12
+
 ### Added
 
-- platform support documentation covering Apple, Linux, Android, and future Flutter integration
-- portable default cache-directory selection for non-Apple environments
-- `f1-cli` `clear-cache` / `--clear-cache` subcommand that calls `F1Client.clearCache()`
+- merge of `multiplatform-porting` into `main`: portable cache paths, crypto, Codable public models, and CLI cache control
+- `PlatformPaths` helper for default on-disk cache directory across supported platforms
+- `swift-crypto` dependency (via `Package.resolved`) replacing `CryptoKit` usage in cache key hashing
+- `docs/platform-support.md` and related platform roadmap documentation (Apple, Linux, Android, future Kotlin/Flutter)
+- `f1-cli` `clear-cache` / `--clear-cache` subcommand calling `F1Client.clearCache()`
+- `Codable` conformance on public session, lap, telemetry, and chart adapter types for bridging and serialization
+- tests exercising Codable round-trips for public models
 
 ### Changed
 
-- replaced `CryptoKit` with cross-platform `swift-crypto` for deterministic cache-key hashing
-- made public session and telemetry models easier to bridge by adding `Codable` conformance
-- clarified the repository direction toward a portable Swift core with future Android bridge layers
-
-### Tested
-
-- added codable round-trip coverage for public session and telemetry models
+- `CacheKey` hashing now uses `swift-crypto` for cross-platform deterministic filenames
+- default `F1Client.Configuration` cache directory resolved through `PlatformPaths`
+- `SwiftF1TelemetryVersion.current` updated to `0.1.3`; README, overview, and API docs list `0.1.3` as the current release
+- repository direction documentation updated toward a portable Swift core
 
 ## [0.1.2] - 2026-04-12
 
