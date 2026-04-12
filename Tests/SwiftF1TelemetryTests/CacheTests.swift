@@ -4,6 +4,7 @@ import Testing
 
 @Test func defaultConfigurationUsesMinimumCacheMode() {
     #expect(F1Client.Configuration.default.cacheMode == .minimum)
+    #expect(F1Client.Configuration.default.cacheDirectory.lastPathComponent == "SwiftF1Telemetry")
 }
 
 @Test func diskCacheEvictsOldFilesWhenLimitIsExceeded() async throws {
@@ -57,4 +58,73 @@ import Testing
 
     let after = try FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
     #expect(after.isEmpty)
+}
+
+@Test func publicTelemetryModelsSupportCodableRoundTrip() throws {
+    let trace = TelemetryTrace(
+        driverNumber: "16",
+        lapNumber: 20,
+        samples: [
+            TelemetrySample(
+                sessionTime: 123.4,
+                lapTime: 12.3,
+                speed: 321,
+                rpm: 11200,
+                throttle: 0.98,
+                brake: false,
+                drs: 12,
+                gear: 8,
+                x: 100,
+                y: 200,
+                z: 5,
+                status: "OnTrack",
+                distance: 5432.1,
+                relativeDistance: 0.94,
+                source: .merged
+            )
+        ]
+    )
+
+    let encoded = try JSONEncoder().encode(trace)
+    let decoded = try JSONDecoder().decode(TelemetryTrace.self, from: encoded)
+
+    #expect(decoded.driverNumber == trace.driverNumber)
+    #expect(decoded.lapNumber == trace.lapNumber)
+    #expect(decoded.samples == trace.samples)
+}
+
+@Test func publicSessionModelsSupportCodableRoundTrip() throws {
+    let lap = Lap(
+        driverNumber: "55",
+        lapNumber: 14,
+        startSessionTime: 400,
+        endSessionTime: 482.4,
+        lapTime: 82.4,
+        sector1: 26.1,
+        sector2: 28.0,
+        sector3: 28.3,
+        isAccurate: true
+    )
+    let sessionRef = SessionRef(
+        year: 2024,
+        meeting: "Monza",
+        sessionType: .qualifying,
+        backendIdentifier: "archive",
+        archivePath: "2024/monza/q"
+    )
+    let metadata = SessionMetadata(
+        officialName: "Italian Grand Prix - Qualifying",
+        circuitName: "Monza",
+        scheduledStart: nil,
+        actualStart: nil,
+        timezoneIdentifier: "Europe/Rome"
+    )
+
+    let lapData = try JSONEncoder().encode(lap)
+    let sessionRefData = try JSONEncoder().encode(sessionRef)
+    let metadataData = try JSONEncoder().encode(metadata)
+
+    #expect(try JSONDecoder().decode(Lap.self, from: lapData) == lap)
+    #expect(try JSONDecoder().decode(SessionRef.self, from: sessionRefData) == sessionRef)
+    #expect(try JSONDecoder().decode(SessionMetadata.self, from: metadataData) == metadata)
 }
