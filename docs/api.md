@@ -79,6 +79,7 @@ What the caller should expect:
 - `requestTimeout` controls request timeout behavior
 - `maxRetries` controls retry count in the HTTP layer
 - `userAgent` customizes the HTTP user agent
+- the default `userAgent` is `SwiftF1Telemetry/` plus `SwiftF1TelemetryVersion.current` (single source of truth for the release string)
 - the default cache directory is selected using a portable strategy rather than an Apple-only path assumption
 
 Cache modes:
