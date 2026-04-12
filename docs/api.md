@@ -3,6 +3,7 @@
 This document describes the current public API exposed by `SwiftF1Telemetry`.
 
 For a more practical explanation of which telemetry fields are available for a lap and how to consume them, see [Telemetry Data Guide](telemetry-data.md).
+For current Apple, Linux, and Android status, see [Platform Support](platform-support.md).
 
 ## Entry Point
 
@@ -78,6 +79,7 @@ What the caller should expect:
 - `requestTimeout` controls request timeout behavior
 - `maxRetries` controls retry count in the HTTP layer
 - `userAgent` customizes the HTTP user agent
+- the default cache directory is selected using a portable strategy rather than an Apple-only path assumption
 
 Cache modes:
 
@@ -150,7 +152,7 @@ What the caller should expect:
 ### `SessionRef`
 
 ```swift
-public struct SessionRef: Sendable, Hashable {
+public struct SessionRef: Sendable, Hashable, Codable {
     public let year: Int
     public let meeting: String
     public let sessionType: SessionType
@@ -167,7 +169,7 @@ What the caller should expect:
 ### `SessionMetadata`
 
 ```swift
-public struct SessionMetadata: Sendable, Hashable {
+public struct SessionMetadata: Sendable, Hashable, Codable {
     public let officialName: String
     public let circuitName: String
     public let scheduledStart: Date?
@@ -204,7 +206,7 @@ What the caller should expect:
 ### `Lap`
 
 ```swift
-public struct Lap: Sendable, Hashable {
+public struct Lap: Sendable, Hashable, Codable {
     public let driverNumber: String
     public let lapNumber: Int
     public let startSessionTime: TimeInterval
@@ -228,7 +230,7 @@ What the caller should expect:
 ### `TelemetryTrace`
 
 ```swift
-public struct TelemetryTrace: Sendable {
+public struct TelemetryTrace: Sendable, Codable {
     public let driverNumber: String
     public let lapNumber: Int
     public let samples: [TelemetrySample]
@@ -243,7 +245,7 @@ What the caller should expect:
 ### `TelemetrySample`
 
 ```swift
-public struct TelemetrySample: Sendable, Hashable {
+public struct TelemetrySample: Sendable, Hashable, Codable {
     public let sessionTime: TimeInterval
     public let lapTime: TimeInterval
 
@@ -273,6 +275,7 @@ What the caller should expect:
 - telemetry channels are optional, because not every sample necessarily has every value
 - `distance` is accumulated lap distance
 - `relativeDistance` is normalized progress through the lap
+- these public telemetry models support `Codable`, which makes future bridge layers easier to implement
 
 ### `SampleSource`
 
