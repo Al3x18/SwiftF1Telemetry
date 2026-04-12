@@ -11,6 +11,7 @@ Current documented release: `0.1.1`
 - [Package Overview](docs/overview.md)
 - [API Reference](docs/api.md)
 - [Telemetry Data Guide](docs/telemetry-data.md)
+- [Platform Support](docs/platform-support.md)
 - [Changelog](CHANGELOG.md)
 
 ## Status
@@ -27,6 +28,7 @@ What already works well:
 - Disk caching of raw upstream payloads
 - Configurable cache sizing with built-in storage profiles
 - Public cache clearing API
+- Bridge-friendly Codable public models
 - Command-line smoke usage through `f1-cli`
 
 What is still in progress:
@@ -35,6 +37,8 @@ What is still in progress:
 - Complete handling of generated laps, pit edge cases, and session interruptions
 - More advanced interpolation and telemetry resampling behavior
 - Broader validation across many seasons and session types
+- Linux CI/runtime validation
+- Android bridge work for Kotlin/Java and Flutter consumers
 
 ## Installation
 
@@ -93,6 +97,7 @@ For more details about supported APIs, runtime behavior, validation, architectur
 - [docs/overview.md](docs/overview.md)
 - [docs/api.md](docs/api.md)
 - [docs/telemetry-data.md](docs/telemetry-data.md)
+- [docs/platform-support.md](docs/platform-support.md)
 
 ## Testing
 
