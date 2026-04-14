@@ -31,6 +31,7 @@ public final class F1Client: Sendable {
         session: SessionType
     ) async throws -> Session
     public func clearCache() async throws
+    public func cacheSizeInMB() async throws -> Double
 }
 ```
 
@@ -47,6 +48,7 @@ What the caller should expect:
 - it returns a fully usable `Session`
 - it may throw `F1TelemetryError`
 - `clearCache()` removes all cached raw payloads from the configured cache directory
+- `cacheSizeInMB()` returns the current on-disk cache size in megabytes as a `Double`
 
 ### `F1Client.Configuration`
 
@@ -482,7 +484,7 @@ What the caller should expect:
 
 ```swift
 public enum SwiftF1TelemetryVersion {
-    public static let current = "0.3.0"
+    public static let current = "0.3.1"
 }
 ```
 
