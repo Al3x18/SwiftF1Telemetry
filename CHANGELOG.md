@@ -7,6 +7,23 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-14
+
+### Added
+
+- public `TelemetryComparison` and `TelemetryComparisonSample` models for aligned lap-to-lap analysis
+- public `Session.compare(reference:compared:)` API for comparing two already-built telemetry traces
+- public `Session.compareTelemetry(referenceLap:comparedLap:)` API for comparing two selected laps
+- public `Session.compareFastestLaps(referenceDriver:comparedDriver:)` API for comparing the fastest valid laps of two drivers
+- chart-ready comparison helpers for delta, speed, throttle, RPM, gear, and brake overlays
+- dedicated tests for interpolation, delta calculation, and the public fastest-lap comparison flow
+
+### Changed
+
+- `SwiftF1TelemetryVersion.current` updated to `0.2.0`
+- README and docs now describe lap comparison workflows and outputs more clearly
+- API reference and telemetry guide now document the comparison models and helper series in detail
+
 ## [0.1.3] - 2026-04-12
 
 ### Added
