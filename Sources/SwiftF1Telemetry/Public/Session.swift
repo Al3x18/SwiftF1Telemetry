@@ -15,6 +15,7 @@ public struct Session: Sendable {
     private let telemetryMerger: TelemetryMerger
     private let interpolator: Interpolator
     private let distanceCalculator: DistanceCalculator
+    private let comparisonCalculator: TelemetryComparisonCalculator
 
     init(
         ref: SessionRef,
@@ -26,7 +27,8 @@ public struct Session: Sendable {
         lapSlicer: LapSlicer = LapSlicer(),
         telemetryMerger: TelemetryMerger = TelemetryMerger(),
         interpolator: Interpolator = Interpolator(),
-        distanceCalculator: DistanceCalculator = DistanceCalculator()
+        distanceCalculator: DistanceCalculator = DistanceCalculator(),
+        comparisonCalculator: TelemetryComparisonCalculator = TelemetryComparisonCalculator()
     ) {
         self.ref = ref
         self.metadata = metadata
@@ -38,6 +40,7 @@ public struct Session: Sendable {
         self.telemetryMerger = telemetryMerger
         self.interpolator = interpolator
         self.distanceCalculator = distanceCalculator
+        self.comparisonCalculator = comparisonCalculator
     }
 
     /// Returns the currently parsed laps for this session.
@@ -87,5 +90,31 @@ public struct Session: Sendable {
             lapNumber: lap.lapNumber,
             samples: distanceReady
         )
+    }
+
+    /// Compares two telemetry traces aligned on shared lap progress.
+    public func compare(reference: TelemetryTrace, compared: TelemetryTrace) throws -> TelemetryComparison {
+        try comparisonCalculator.compare(reference: reference, compared: compared)
+    }
+
+    /// Builds and compares telemetry for two already selected laps.
+    public func compareTelemetry(referenceLap: Lap, comparedLap: Lap) async throws -> TelemetryComparison {
+        async let referenceTelemetry = telemetry(for: referenceLap)
+        async let comparedTelemetry = telemetry(for: comparedLap)
+
+        return try compare(reference: try await referenceTelemetry, compared: try await comparedTelemetry)
+    }
+
+    /// Compares the fastest valid laps for the two specified drivers.
+    public func compareFastestLaps(referenceDriver: String, comparedDriver: String) async throws -> TelemetryComparison {
+        guard let referenceLap = try await fastestLap(driver: referenceDriver) else {
+            throw F1TelemetryError.noLapsAvailable(driver: referenceDriver)
+        }
+
+        guard let comparedLap = try await fastestLap(driver: comparedDriver) else {
+            throw F1TelemetryError.noLapsAvailable(driver: comparedDriver)
+        }
+
+        return try await compareTelemetry(referenceLap: referenceLap, comparedLap: comparedLap)
     }
 }
