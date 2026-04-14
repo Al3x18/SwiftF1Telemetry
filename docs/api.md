@@ -274,12 +274,14 @@ public struct TelemetryTrace: Sendable, Codable {
     public let driverNumber: String
     public let lapNumber: Int
     public let samples: [TelemetrySample]
+    public let officialLapTime: TimeInterval?
 }
 ```
 
 What the caller should expect:
 
 - `samples` ordered on the telemetry timeline for that lap
+- `officialLapTime` carries the timing-feed lap time used to anchor boundary normalization in comparisons
 - chart-helper methods available via extensions
 - suitable as input to lap comparison APIs
 
@@ -287,25 +289,25 @@ What the caller should expect:
 
 ```swift
 public struct TelemetrySample: Sendable, Hashable, Codable {
-    public let sessionTime: TimeInterval
-    public let lapTime: TimeInterval
+    public var sessionTime: TimeInterval
+    public var lapTime: TimeInterval
 
-    public let speed: Double?
-    public let rpm: Double?
-    public let throttle: Double?
-    public let brake: Bool?
-    public let drs: Int?
-    public let gear: Int?
+    public var speed: Double?
+    public var rpm: Double?
+    public var throttle: Double?
+    public var brake: Bool?
+    public var drs: Int?
+    public var gear: Int?
 
-    public let x: Double?
-    public let y: Double?
-    public let z: Double?
-    public let status: String?
+    public var x: Double?
+    public var y: Double?
+    public var z: Double?
+    public var status: String?
 
-    public let distance: Double?
-    public let relativeDistance: Double?
+    public var distance: Double?
+    public var relativeDistance: Double?
 
-    public let source: SampleSource
+    public var source: SampleSource
 }
 ```
 
@@ -315,7 +317,8 @@ What the caller should expect:
 - `lapTime`: elapsed time since the start of the selected lap
 - telemetry channels are optional, because not every sample necessarily has every value
 - `distance` is accumulated lap distance
-- `relativeDistance` is normalized progress through the lap
+- `relativeDistance` is normalized progress through the lap, computed from physical distance rather than sample index
+- properties are declared as `var` for idiomatic struct copy-and-mutate; `Sendable`, `Hashable`, and `Codable` conformance is unaffected
 - these public telemetry models support `Codable`, which makes future bridge layers easier to implement
 
 ## Comparison Models
@@ -479,7 +482,7 @@ What the caller should expect:
 
 ```swift
 public enum SwiftF1TelemetryVersion {
-    public static let current = "0.2.1"
+    public static let current = "0.3.0"
 }
 ```
 
