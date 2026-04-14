@@ -1,12 +1,27 @@
 import Foundation
 
-/// A telemetry trace for a specific driver and lap.
+/// Merged telemetry data for a specific driver and lap.
+///
+/// Obtain a trace via ``Session/telemetry(for:)``:
+///
+/// ```swift
+/// let trace = try await session.telemetry(for: lap)
+///
+/// // Access raw samples
+/// for sample in trace.samples {
+///     print("\(sample.distance ?? 0)m — \(sample.speed ?? 0) km/h")
+/// }
+///
+/// // Or use chart-ready helpers
+/// let speed = trace.speedSeriesByDistance()   // [ChartPoint<Double>]
+/// let track = trace.trackMap()                // [TrackPoint]
+/// ```
 public struct TelemetryTrace: Sendable, Codable {
-    /// Driver racing number.
+    /// Driver racing number (e.g. `"1"`, `"16"`).
     public let driverNumber: String
     /// Lap number associated with these samples.
     public let lapNumber: Int
-    /// Ordered telemetry samples for the lap.
+    /// Ordered telemetry samples for the lap, sorted by session time.
     public let samples: [TelemetrySample]
 
     public init(driverNumber: String, lapNumber: Int, samples: [TelemetrySample]) {
@@ -17,6 +32,17 @@ public struct TelemetryTrace: Sendable, Codable {
 }
 
 /// A single telemetry sample containing car data, position data, and derived values.
+///
+/// Most fields are optional because upstream data streams do not always overlap.
+/// When accessing raw samples, always handle `nil` values:
+///
+/// ```swift
+/// for sample in trace.samples {
+///     if let speed = sample.speed, let dist = sample.distance {
+///         print("\(dist)m: \(speed) km/h")
+///     }
+/// }
+/// ```
 public struct TelemetrySample: Sendable, Hashable, Codable {
     /// Elapsed time on the session telemetry clock, in seconds.
     public let sessionTime: TimeInterval
@@ -85,6 +111,11 @@ public struct TelemetrySample: Sendable, Hashable, Codable {
 }
 
 /// Indicates where a telemetry sample originated from.
+///
+/// - ``car``: Raw car telemetry (speed, RPM, gear, etc.).
+/// - ``position``: Raw position data (x, y, z coordinates).
+/// - ``merged``: Combined car + position data at a shared timestamp.
+/// - ``interpolated``: Synthetically generated to fill gaps between samples.
 public enum SampleSource: String, Sendable, Codable {
     case car
     case position
