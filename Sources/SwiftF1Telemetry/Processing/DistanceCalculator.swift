@@ -4,36 +4,19 @@ struct DistanceCalculator {
     func applyingDistance(to samples: [TelemetrySample]) -> [TelemetrySample] {
         guard !samples.isEmpty else { return [] }
 
-        var totalDistance = 0.0
-        let sorted = samples.sorted { $0.sessionTime < $1.sessionTime }
-        let lastIndex = max(0, sorted.count - 1)
+        var result = samples.sorted { $0.sessionTime < $1.sessionTime }
 
-        return sorted.enumerated().map { index, sample in
-            if index > 0 {
-                let previous = sorted[index - 1]
-                totalDistance += deltaDistance(from: previous, to: sample)
-            }
-
-            let relativeDistance = lastIndex == 0 ? 0.0 : Double(index) / Double(lastIndex)
-
-            return TelemetrySample(
-                sessionTime: sample.sessionTime,
-                lapTime: sample.lapTime,
-                speed: sample.speed,
-                rpm: sample.rpm,
-                throttle: sample.throttle,
-                brake: sample.brake,
-                drs: sample.drs,
-                gear: sample.gear,
-                x: sample.x,
-                y: sample.y,
-                z: sample.z,
-                status: sample.status,
-                distance: totalDistance,
-                relativeDistance: relativeDistance,
-                source: sample.source
-            )
+        result[0].distance = 0
+        for i in 1..<result.count {
+            result[i].distance = result[i - 1].distance! + deltaDistance(from: result[i - 1], to: result[i])
         }
+
+        let totalDistance = result.last!.distance!
+        for i in result.indices {
+            result[i].relativeDistance = totalDistance > 0 ? result[i].distance! / totalDistance : 0
+        }
+
+        return result
     }
 
     private func deltaDistance(from previous: TelemetrySample, to current: TelemetrySample) -> Double {
