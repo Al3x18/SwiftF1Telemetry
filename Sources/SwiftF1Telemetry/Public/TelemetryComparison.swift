@@ -1,6 +1,27 @@
 import Foundation
 
 /// A lap-to-lap telemetry comparison aligned on a shared lap progress axis.
+///
+/// Obtain a comparison with one of the ``Session`` comparison methods:
+///
+/// ```swift
+/// // Quickest path — compares fastest laps for two drivers:
+/// let comparison = try await session.compareFastestLaps(
+///     referenceDriver: "16",
+///     comparedDriver: "55"
+/// )
+///
+/// // Check overall gap
+/// print("Final delta: \(comparison.finalDelta ?? 0)s")
+///
+/// // Chart-ready series
+/// let delta = comparison.deltaSeriesByDistance()
+/// let refSpeed = comparison.referenceSpeedSeriesByDistance()
+/// let cmpSpeed = comparison.comparedSpeedSeriesByDistance()
+/// ```
+///
+/// A positive ``TelemetryComparisonSample/delta`` means the compared lap is
+/// slower at that point; a negative value means it is ahead.
 public struct TelemetryComparison: Sendable, Codable {
     /// The telemetry trace used as the baseline for delta calculations.
     public let reference: TelemetryTrace
@@ -16,12 +37,17 @@ public struct TelemetryComparison: Sendable, Codable {
     }
 
     /// The final lap-time delta at the end of the aligned lap.
+    ///
+    /// Positive means the compared driver was slower overall.
     public var finalDelta: TimeInterval? {
         samples.last?.delta
     }
 }
 
-/// A single aligned comparison sample for two laps.
+/// A single aligned comparison sample for two laps at the same progress point.
+///
+/// Each sample pairs the reference and compared channel values at a shared
+/// ``relativeDistance`` so they can be plotted on the same x-axis.
 public struct TelemetryComparisonSample: Sendable, Hashable, Codable {
     /// Shared lap distance, in meters, when available.
     public let distance: Double?
@@ -87,7 +113,16 @@ public struct TelemetryComparisonSample: Sendable, Hashable, Codable {
     }
 }
 
+/// Chart-ready series extracted from a ``TelemetryComparison``.
+///
+/// ```swift
+/// let delta    = comparison.deltaSeriesByDistance()              // [ChartPoint<Double>]
+/// let refSpeed = comparison.referenceSpeedSeriesByDistance()     // [ChartPoint<Double>]
+/// let cmpSpeed = comparison.comparedSpeedSeriesByDistance()      // [ChartPoint<Double>]
+/// let refBrake = comparison.referenceBrakeSeriesByDistance()     // [ChartPoint<Bool>]
+/// ```
 public extension TelemetryComparison {
+    /// Time delta (compared − reference) vs lap distance (m).
     func deltaSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in
             guard let distance = sample.distance else { return nil }
@@ -95,10 +130,12 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Time delta (compared − reference) vs normalized lap progress (0…1).
     func deltaSeriesByRelativeDistance() -> [ChartPoint<Double>] {
         samples.map { ChartPoint(x: $0.relativeDistance, y: $0.delta) }
     }
 
+    /// Reference speed (km/h) vs lap distance (m).
     func referenceSpeedSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let speed = sample.referenceSpeed else { return nil }
@@ -106,6 +143,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Compared speed (km/h) vs lap distance (m).
     func comparedSpeedSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let speed = sample.comparedSpeed else { return nil }
@@ -113,6 +151,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Reference throttle vs lap distance (m).
     func referenceThrottleSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let throttle = sample.referenceThrottle else { return nil }
@@ -120,6 +159,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Compared throttle vs lap distance (m).
     func comparedThrottleSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let throttle = sample.comparedThrottle else { return nil }
@@ -127,6 +167,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Reference RPM vs lap distance (m).
     func referenceRPMSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let rpm = sample.referenceRPM else { return nil }
@@ -134,6 +175,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Compared RPM vs lap distance (m).
     func comparedRPMSeriesByDistance() -> [ChartPoint<Double>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let rpm = sample.comparedRPM else { return nil }
@@ -141,6 +183,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Reference gear vs lap distance (m).
     func referenceGearSeriesByDistance() -> [ChartPoint<Int>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let gear = sample.referenceGear else { return nil }
@@ -148,6 +191,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Compared gear vs lap distance (m).
     func comparedGearSeriesByDistance() -> [ChartPoint<Int>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let gear = sample.comparedGear else { return nil }
@@ -155,6 +199,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Reference brake state vs lap distance (m).
     func referenceBrakeSeriesByDistance() -> [ChartPoint<Bool>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let brake = sample.referenceBrake else { return nil }
@@ -162,6 +207,7 @@ public extension TelemetryComparison {
         }
     }
 
+    /// Compared brake state vs lap distance (m).
     func comparedBrakeSeriesByDistance() -> [ChartPoint<Bool>] {
         samples.compactMap { sample in
             guard let distance = sample.distance, let brake = sample.comparedBrake else { return nil }
