@@ -4,7 +4,9 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.1.3`
+Current documented release: `0.2.0`
+
+This page is the technical deep dive. For installation, quick start, and day-to-day usage snippets, use the repository [README](../README.md).
 
 ## Why This Package Exists
 
@@ -30,6 +32,8 @@ The long-term goal is to make high-quality F1 telemetry analysis possible in Swi
 - Car data and position data parsing
 - Merged telemetry traces
 - Derived distance and relative distance channels
+- Public lap-to-lap telemetry comparison APIs
+- Delta-time and overlay chart helpers for two-lap analysis
 - Plain chart-friendly output types
 - CLI executable for manual inspection
 
@@ -48,6 +52,8 @@ SwiftF1Telemetry/
 ├─ Package.swift
 ├─ README.md
 ├─ CHANGELOG.md
+├─ CONTRIBUTING.md
+├─ LICENSE
 ├─ docs/
 │  ├─ overview.md
 │  ├─ api.md
@@ -75,6 +81,15 @@ For a real validated example:
 let session = try await client.session(year: 2024, meeting: "Monza", session: .qualifying)
 let lap = try await session.fastestLap(driver: "16")
 let telemetry = try await session.telemetry(for: lap!)
+```
+
+For a comparison flow:
+
+```swift
+let comparison = try await session.compareFastestLaps(
+    referenceDriver: "16",
+    comparedDriver: "55"
+)
 ```
 
 At the time of validation, this resolved to:
@@ -132,6 +147,7 @@ This is the API consumed by apps and tools:
 - `Session`
 - `Lap`
 - `TelemetryTrace`
+- `TelemetryComparison`
 - chart adapters
 
 ### Backend Layer
@@ -170,7 +186,7 @@ Processing components:
 - telemetry merge
 - interpolation stub
 - distance calculation
-- delta calculation foundation
+- telemetry comparison alignment and delta calculation
 
 ## Accuracy and Validation
 
@@ -218,6 +234,7 @@ Short-term priorities:
 - improve interpolation and merge fidelity
 - expand validation across multiple weekends and session types
 - improve README examples and add more tests
+- strengthen comparison validation against FastF1-style reference plots on more sessions
 
 Long-term priorities:
 
@@ -225,7 +242,7 @@ Long-term priorities:
 - Linux CI coverage
 - Android bridge layer
 - Flutter plugin integration on top of native bridges
-- richer comparison APIs
+- richer comparison APIs beyond fastest-lap overlays
 - SwiftUI sample integration
 - broader telemetry processing utilities
 
@@ -238,5 +255,10 @@ Contributions are welcome, especially around:
 - session edge cases
 - documentation
 - tests and fixtures
+
+See also:
+
+- [Contributing Guide](../CONTRIBUTING.md)
+- [MIT License](../LICENSE)
 
 If you contribute parser or lap-building logic derived from FastF1 behavior, please preserve attribution where appropriate.
