@@ -43,12 +43,12 @@ struct DefaultBackend: BackendProtocol, Sendable {
     func fetchSessionMetadata(for session: SessionRef) async throws -> Data {
         let key = CacheKey(session: session, dataset: "metadata")
         return try await cachedData(for: key) {
-            let info = try await fetchText(relativePath: session.archivePath + "SessionInfo.jsonStream")
-            let sessionData = try await fetchText(relativePath: session.archivePath + "SessionData.json")
+            async let info = fetchText(relativePath: session.archivePath + "SessionInfo.jsonStream")
+            async let sessionData = fetchText(relativePath: session.archivePath + "SessionData.json")
             return try JSONEncoder().encode(
                 RawSessionMetadataEnvelope(
-                    sessionInfoStream: info,
-                    sessionDataJSON: sessionData
+                    sessionInfoStream: try await info,
+                    sessionDataJSON: try await sessionData
                 )
             )
         }
@@ -57,16 +57,16 @@ struct DefaultBackend: BackendProtocol, Sendable {
     func fetchTimingData(for session: SessionRef) async throws -> Data {
         let key = CacheKey(session: session, dataset: "timing")
         return try await cachedData(for: key) {
-            let timingData = try await fetchText(relativePath: session.archivePath + "TimingData.jsonStream")
-            let timingAppData = try? await fetchText(relativePath: session.archivePath + "TimingAppData.jsonStream")
-            let heartbeat = try? await fetchText(relativePath: session.archivePath + "Heartbeat.jsonStream")
-            let sessionStartDate = try? await resolvedSessionStart(for: session)
+            async let td = fetchText(relativePath: session.archivePath + "TimingData.jsonStream")
+            async let tad = fetchText(relativePath: session.archivePath + "TimingAppData.jsonStream")
+            async let hb = fetchText(relativePath: session.archivePath + "Heartbeat.jsonStream")
+            async let ssd = resolvedSessionStart(for: session)
             return try JSONEncoder().encode(
                 RawTimingEnvelope(
-                    timingDataStream: timingData,
-                    timingAppDataStream: timingAppData,
-                    heartbeatStream: heartbeat,
-                    sessionStartDate: sessionStartDate
+                    timingDataStream: try await td,
+                    timingAppDataStream: try? await tad,
+                    heartbeatStream: try? await hb,
+                    sessionStartDate: try? await ssd
                 )
             )
         }
@@ -75,12 +75,12 @@ struct DefaultBackend: BackendProtocol, Sendable {
     func fetchCarData(for session: SessionRef) async throws -> Data {
         let key = CacheKey(session: session, dataset: "car")
         return try await cachedData(for: key) {
-            let sessionStartDate = try await resolvedSessionStart(for: session)
-            let stream = try await fetchText(relativePath: session.archivePath + "CarData.z.jsonStream")
+            async let sessionStartDate = resolvedSessionStart(for: session)
+            async let stream = fetchText(relativePath: session.archivePath + "CarData.z.jsonStream")
             return try JSONEncoder().encode(
                 RawTelemetryEnvelope(
-                    sessionStartDate: sessionStartDate,
-                    stream: stream
+                    sessionStartDate: try await sessionStartDate,
+                    stream: try await stream
                 )
             )
         }
@@ -89,12 +89,12 @@ struct DefaultBackend: BackendProtocol, Sendable {
     func fetchPositionData(for session: SessionRef) async throws -> Data {
         let key = CacheKey(session: session, dataset: "position")
         return try await cachedData(for: key) {
-            let sessionStartDate = try await resolvedSessionStart(for: session)
-            let stream = try await fetchText(relativePath: session.archivePath + "Position.z.jsonStream")
+            async let sessionStartDate = resolvedSessionStart(for: session)
+            async let stream = fetchText(relativePath: session.archivePath + "Position.z.jsonStream")
             return try JSONEncoder().encode(
                 RawTelemetryEnvelope(
-                    sessionStartDate: sessionStartDate,
-                    stream: stream
+                    sessionStartDate: try await sessionStartDate,
+                    stream: try await stream
                 )
             )
         }
