@@ -47,6 +47,7 @@ public struct TelemetryTrace: Sendable {
     public let driverNumber: String
     public let lapNumber: Int
     public let samples: [TelemetrySample]
+    public let officialLapTime: TimeInterval?
 }
 ```
 
@@ -54,25 +55,25 @@ Each `TelemetrySample` may contain:
 
 ```swift
 public struct TelemetrySample: Sendable, Hashable {
-    public let sessionTime: TimeInterval
-    public let lapTime: TimeInterval
+    public var sessionTime: TimeInterval
+    public var lapTime: TimeInterval
 
-    public let speed: Double?
-    public let rpm: Double?
-    public let throttle: Double?
-    public let brake: Bool?
-    public let drs: Int?
-    public let gear: Int?
+    public var speed: Double?
+    public var rpm: Double?
+    public var throttle: Double?
+    public var brake: Bool?
+    public var drs: Int?
+    public var gear: Int?
 
-    public let x: Double?
-    public let y: Double?
-    public let z: Double?
-    public let status: String?
+    public var x: Double?
+    public var y: Double?
+    public var z: Double?
+    public var status: String?
 
-    public let distance: Double?
-    public let relativeDistance: Double?
+    public var distance: Double?
+    public var relativeDistance: Double?
 
-    public let source: SampleSource
+    public var source: SampleSource
 }
 ```
 
@@ -396,7 +397,6 @@ What is less mature:
 - full session-wide lap reconstruction parity
 - all generated lap edge cases
 - some complex pit/interruption scenarios
-- advanced interpolation behavior across all use cases
 
 ## Example: Extracting Channels Manually
 
