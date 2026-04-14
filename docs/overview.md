@@ -230,7 +230,6 @@ Short-term priorities:
 - improve lap table parity with FastF1
 - port more lap-building heuristics
 - expand validation across multiple weekends and session types
-- improve README examples and add more tests
 - strengthen comparison validation against FastF1-style reference plots on more sessions
 
 Long-term priorities:
