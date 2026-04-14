@@ -4,7 +4,7 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.3.1`
+Current documented release: `0.3.2`
 
 This page is the technical deep dive. For installation, quick start, and day-to-day usage snippets, use the repository [README](../README.md).
 
@@ -152,7 +152,7 @@ This is the API consumed by apps and tools:
 
 ### Backend Layer
 
-The backend resolves sessions and fetches raw datasets without leaking upstream details into the public API. On cold cache, each fetch function uses `async let` to parallelise its internal HTTP requests, so the total wait time equals the slowest single request rather than the sum of all requests.
+The backend resolves sessions and fetches raw datasets without leaking upstream details into the public API. On cold cache, each fetch function uses `async let` to parallelise its internal HTTP requests, so the total wait time equals the slowest single request rather than the sum of all requests. Season index resolution is cached for past years (immutable data) while the current season's index is always fetched from the network to pick up newly added meetings.
 
 ### Transport Layer
 
