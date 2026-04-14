@@ -38,6 +38,8 @@ public struct TelemetryComparison: Sendable, Codable {
 
     /// The final lap-time delta at the end of the aligned lap.
     ///
+    /// When ``TelemetryTrace/officialLapTime`` is available on both traces,
+    /// this value matches the official timing gap.
     /// Positive means the compared driver was slower overall.
     public var finalDelta: TimeInterval? {
         samples.last?.delta
