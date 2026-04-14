@@ -140,4 +140,14 @@ public final class F1Client: Sendable {
     public func clearCache() async throws {
         try await cacheStore.removeAll()
     }
+
+    /// Returns the current on-disk cache size in megabytes.
+    ///
+    /// ```swift
+    /// let sizeMB = try await client.cacheSizeInMB()
+    /// print("Cache: \(String(format: "%.1f", sizeMB)) MB")
+    /// ```
+    public func cacheSizeInMB() async throws -> Double {
+        Double(try await cacheStore.totalSizeInBytes()) / (1_024 * 1_024)
+    }
 }
