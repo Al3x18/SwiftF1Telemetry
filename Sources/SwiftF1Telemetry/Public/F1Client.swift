@@ -1,10 +1,31 @@
 import Foundation
 
+/// The main entry point for fetching F1 telemetry and session data.
+///
+/// Create a client with the default configuration:
+///
+/// ```swift
+/// let client = F1Client()
+/// ```
+///
+/// Or provide a custom ``Configuration`` to control caching, timeouts, and retries:
+///
+/// ```swift
+/// let config = F1Client.Configuration(
+///     cacheDirectory: URL.documentsDirectory.appending(path: "F1Cache"),
+///     cacheMode: .large,
+///     requestTimeout: 30,
+///     maxRetries: 3,
+///     userAgent: "MyApp/1.0"
+/// )
+/// let client = F1Client(configuration: config)
+/// ```
 public final class F1Client: Sendable {
+    /// Configures networking, caching, and retry behavior for an ``F1Client``.
     public struct Configuration: Sendable {
         /// Controls how much disk space the built-in raw payload cache may use.
         public enum CacheMode: Sendable {
-            /// Keeps caching enabled with no size limit.
+            /// Disables on-disk caching entirely.
             case disabled
             /// Keeps up to 50 MB of cached data on disk.
             case minimum
@@ -42,7 +63,7 @@ public final class F1Client: Sendable {
         /// Custom HTTP user agent sent with upstream requests.
         public var userAgent: String
 
-        /// Default configuration used by `F1Client()`.
+        /// The default configuration used when calling `F1Client()` with no arguments.
         public static let `default` = Configuration(
             cacheDirectory: PlatformPaths.defaultCacheDirectory(named: "SwiftF1Telemetry"),
             cacheMode: .minimum,
@@ -52,6 +73,13 @@ public final class F1Client: Sendable {
         )
 
         /// Creates a custom client configuration.
+        ///
+        /// - Parameters:
+        ///   - cacheDirectory: The directory where raw payloads are stored on disk.
+        ///   - cacheMode: The disk-space retention profile for the cache.
+        ///   - requestTimeout: HTTP request timeout in seconds.
+        ///   - maxRetries: How many times a failed request is retried before throwing.
+        ///   - userAgent: The `User-Agent` header sent with every HTTP request.
         public init(
             cacheDirectory: URL,
             cacheMode: CacheMode,
@@ -72,6 +100,8 @@ public final class F1Client: Sendable {
     private let sessionParser = SessionParser()
 
     /// Creates a client using the provided configuration.
+    ///
+    /// - Parameter configuration: The client configuration. Defaults to ``Configuration/default``.
     public init(configuration: Configuration = .default) {
         let httpClient = URLSessionHTTPClient(
             timeout: configuration.requestTimeout,
