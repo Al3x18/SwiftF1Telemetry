@@ -52,9 +52,22 @@ struct TelemetryComparisonCalculator {
     }
 
     private func normalizedPoints(from trace: TelemetryTrace) -> [TelemetrySample] {
-        trace.samples
+        var points = trace.samples
             .filter { $0.relativeDistance != nil }
             .sorted { ($0.relativeDistance ?? 0) < ($1.relativeDistance ?? 0) }
+
+        guard let officialLapTime = trace.officialLapTime,
+              let lastLapTime = points.last?.lapTime,
+              lastLapTime > 0 else {
+            return points
+        }
+
+        let scale = officialLapTime / lastLapTime
+        for i in points.indices {
+            points[i].lapTime *= scale
+        }
+
+        return points
     }
 
     private func sharedGrid(reference: [TelemetrySample], compared: [TelemetrySample]) -> [Double] {
