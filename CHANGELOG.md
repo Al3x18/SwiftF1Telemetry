@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-04-15
+
+### Changed
+
+- `resolveSession` now caches the season index (`Index.json`) for past years — repeated session resolution for completed seasons no longer requires a network request
+- Current and future season indices are always fetched from the network to avoid stale data when new meetings are added mid-season
+- `SwiftF1TelemetryVersion.current` updated to `0.3.2`
+
 ## [0.3.1] - 2026-04-15
 
 ### Added
