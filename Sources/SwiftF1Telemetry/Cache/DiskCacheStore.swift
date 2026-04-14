@@ -49,6 +49,19 @@ actor DiskCacheStore: CacheStore {
         }
     }
 
+    func totalSizeInBytes() async throws -> Int {
+        guard fileManager.fileExists(atPath: directory.path) else { return 0 }
+        let contents = try fileManager.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: [.fileSizeKey, .isRegularFileKey]
+        )
+        return try contents.reduce(0) { total, url in
+            let values = try url.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey])
+            guard values.isRegularFile == true else { return total }
+            return total + (values.fileSize ?? 0)
+        }
+    }
+
     private func ensureDirectoryExists() throws {
         do {
             try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
