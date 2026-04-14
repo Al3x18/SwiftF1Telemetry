@@ -24,6 +24,20 @@ After this, all telemetry information is available from:
 - `telemetry.samples`
 - chart helpers on `TelemetryTrace`
 
+If you want to compare two laps, the standard flow is:
+
+```swift
+let comparison = try await session.compareFastestLaps(
+    referenceDriver: "16",
+    comparedDriver: "55"
+)
+```
+
+After this, comparison data is available from:
+
+- `comparison.samples`
+- chart helpers on `TelemetryComparison`
+
 ## What a `TelemetryTrace` Contains
 
 `TelemetryTrace` contains:
@@ -153,6 +167,111 @@ This means that users can already generate charts for:
 - gear vs distance
 - RPM vs distance
 - XY track map
+
+## Comparing Two Laps
+
+The library now exposes a dedicated public comparison API.
+
+Typical flow:
+
+```swift
+let referenceLap = try await session.fastestLap(driver: "16")
+let comparedLap = try await session.fastestLap(driver: "55")
+
+let comparison = try await session.compareTelemetry(
+    referenceLap: referenceLap!,
+    comparedLap: comparedLap!
+)
+```
+
+Or, if you want the highest-level convenience path:
+
+```swift
+let comparison = try await session.compareFastestLaps(
+    referenceDriver: "16",
+    comparedDriver: "55"
+)
+```
+
+### What a `TelemetryComparison` Contains
+
+`TelemetryComparison` contains:
+
+```swift
+public struct TelemetryComparison: Sendable {
+    public let reference: TelemetryTrace
+    public let compared: TelemetryTrace
+    public let samples: [TelemetryComparisonSample]
+    public var finalDelta: TimeInterval? { get }
+}
+```
+
+Each `TelemetryComparisonSample` contains both laps at the same aligned progress point:
+
+```swift
+public struct TelemetryComparisonSample: Sendable, Hashable {
+    public let distance: Double?
+    public let relativeDistance: Double
+    public let referenceLapTime: TimeInterval
+    public let comparedLapTime: TimeInterval
+    public let delta: TimeInterval
+
+    public let referenceSpeed: Double?
+    public let referenceRPM: Double?
+    public let referenceThrottle: Double?
+    public let referenceBrake: Bool?
+    public let referenceDRS: Int?
+    public let referenceGear: Int?
+
+    public let comparedSpeed: Double?
+    public let comparedRPM: Double?
+    public let comparedThrottle: Double?
+    public let comparedBrake: Bool?
+    public let comparedDRS: Int?
+    public let comparedGear: Int?
+}
+```
+
+### What to Expect from Comparison Data
+
+- the comparison is aligned on shared lap progress using `relativeDistance`
+- `distance` is included when it can be derived from the aligned pair
+- `delta` is always `compared - reference`
+- positive `delta` means the compared lap is slower at that point
+- negative `delta` means the compared lap is ahead at that point
+
+### Comparison Chart Helpers
+
+`TelemetryComparison` already exposes helpers for the most common overlay charts:
+
+```swift
+comparison.deltaSeriesByDistance()
+comparison.deltaSeriesByRelativeDistance()
+
+comparison.referenceSpeedSeriesByDistance()
+comparison.comparedSpeedSeriesByDistance()
+
+comparison.referenceThrottleSeriesByDistance()
+comparison.comparedThrottleSeriesByDistance()
+
+comparison.referenceRPMSeriesByDistance()
+comparison.comparedRPMSeriesByDistance()
+
+comparison.referenceGearSeriesByDistance()
+comparison.comparedGearSeriesByDistance()
+
+comparison.referenceBrakeSeriesByDistance()
+comparison.comparedBrakeSeriesByDistance()
+```
+
+This means that users can now generate charts for:
+
+- speed overlays
+- throttle overlays
+- RPM overlays
+- gear overlays
+- brake overlays
+- delta time vs distance
 
 ## Practical Expectations Per Channel
 
