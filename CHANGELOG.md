@@ -7,6 +7,19 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-04-15
+
+### Added
+
+- `F1Client.cacheSizeInMB()` returns the current on-disk cache size in megabytes
+- `CacheStore.totalSizeInBytes()` protocol requirement backing the public cache-size API
+
+### Changed
+
+- Backend fetch functions (`fetchSessionMetadata`, `fetchTimingData`, `fetchCarData`, `fetchPositionData`) now use `async let` for parallel HTTP requests on cold cache, reducing total fetch time to the single slowest request instead of the sum of all requests
+- `Session.compareFastestLaps(referenceDriver:comparedDriver:)` now fetches lap data and telemetry data concurrently via `async let`
+- `SwiftF1TelemetryVersion.current` updated to `0.3.1`
+
 ## [0.3.0] - 2026-04-14
 
 ### Fixed
