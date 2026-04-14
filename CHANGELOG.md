@@ -7,6 +7,21 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-04-14
+
+### Added
+
+- CLI comparison mode: pass a second driver number to compare fastest laps (e.g. `swift run f1-cli 2024 "Monza" Q 16 55`)
+- comprehensive Swift Documentation Markup with usage examples on all public APIs: `F1Client`, `Session`, `Lap`, `TelemetryTrace`, `TelemetrySample`, `SampleSource`, `TelemetryComparison`, `TelemetryComparisonSample`, `ChartPoint`, `TrackPoint`, `SessionType`, `SessionRef`, `SessionMetadata`, `F1TelemetryError`, `TimeUtils`, and `SwiftF1TelemetryVersion`
+- doc comments with `- Parameter` / `- Parameters` markup on all public initializers and methods
+- every chart helper on `TelemetryTrace` and `TelemetryComparison` now has a one-line doc comment
+
+### Changed
+
+- `SwiftF1TelemetryVersion.current` updated to `0.2.1`
+- `F1Client.Configuration.CacheMode.disabled` doc comment corrected (was misleadingly saying "keeps caching enabled")
+- CLI usage string updated to show the optional compare-driver argument
+
 ## [0.2.0] - 2026-04-14
 
 ### Added
