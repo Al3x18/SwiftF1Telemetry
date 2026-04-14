@@ -23,11 +23,14 @@ public struct TelemetryTrace: Sendable, Codable {
     public let lapNumber: Int
     /// Ordered telemetry samples for the lap, sorted by session time.
     public let samples: [TelemetrySample]
+    /// Official lap time from the timing feed, used to anchor boundary normalization.
+    public let officialLapTime: TimeInterval?
 
-    public init(driverNumber: String, lapNumber: Int, samples: [TelemetrySample]) {
+    public init(driverNumber: String, lapNumber: Int, samples: [TelemetrySample], officialLapTime: TimeInterval? = nil) {
         self.driverNumber = driverNumber
         self.lapNumber = lapNumber
         self.samples = samples
+        self.officialLapTime = officialLapTime
     }
 }
 
@@ -45,35 +48,35 @@ public struct TelemetryTrace: Sendable, Codable {
 /// ```
 public struct TelemetrySample: Sendable, Hashable, Codable {
     /// Elapsed time on the session telemetry clock, in seconds.
-    public let sessionTime: TimeInterval
+    public var sessionTime: TimeInterval
     /// Elapsed time since the start of the selected lap, in seconds.
-    public let lapTime: TimeInterval
+    public var lapTime: TimeInterval
     /// Car speed in km/h when available.
-    public let speed: Double?
+    public var speed: Double?
     /// Engine RPM when available.
-    public let rpm: Double?
+    public var rpm: Double?
     /// Throttle value when available.
-    public let throttle: Double?
+    public var throttle: Double?
     /// Brake state when available.
-    public let brake: Bool?
+    public var brake: Bool?
     /// Raw DRS state when available.
-    public let drs: Int?
+    public var drs: Int?
     /// Gear number when available.
-    public let gear: Int?
+    public var gear: Int?
     /// Track X coordinate when available.
-    public let x: Double?
+    public var x: Double?
     /// Track Y coordinate when available.
-    public let y: Double?
+    public var y: Double?
     /// Track Z coordinate when available.
-    public let z: Double?
+    public var z: Double?
     /// Upstream position status such as `OnTrack` when available.
-    public let status: String?
+    public var status: String?
     /// Accumulated lap distance in meters when available.
-    public let distance: Double?
-    /// Normalized progress through the lap when available.
-    public let relativeDistance: Double?
+    public var distance: Double?
+    /// Normalized progress through the lap (`0.0`…`1.0`), based on physical distance along the track.
+    public var relativeDistance: Double?
     /// Describes whether the sample originated from car data, position data, or merged/interpolated output.
-    public let source: SampleSource
+    public var source: SampleSource
 
     public init(
         sessionTime: TimeInterval,
