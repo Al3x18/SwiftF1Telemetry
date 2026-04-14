@@ -33,7 +33,6 @@ public struct Session: Sendable {
     private let positionParser: PositionParser
     private let lapSlicer: LapSlicer
     private let telemetryMerger: TelemetryMerger
-    private let interpolator: Interpolator
     private let distanceCalculator: DistanceCalculator
     private let comparisonCalculator: TelemetryComparisonCalculator
 
@@ -46,7 +45,6 @@ public struct Session: Sendable {
         positionParser: PositionParser = PositionParser(),
         lapSlicer: LapSlicer = LapSlicer(),
         telemetryMerger: TelemetryMerger = TelemetryMerger(),
-        interpolator: Interpolator = Interpolator(),
         distanceCalculator: DistanceCalculator = DistanceCalculator(),
         comparisonCalculator: TelemetryComparisonCalculator = TelemetryComparisonCalculator()
     ) {
@@ -58,7 +56,6 @@ public struct Session: Sendable {
         self.positionParser = positionParser
         self.lapSlicer = lapSlicer
         self.telemetryMerger = telemetryMerger
-        self.interpolator = interpolator
         self.distanceCalculator = distanceCalculator
         self.comparisonCalculator = comparisonCalculator
     }
@@ -105,7 +102,7 @@ public struct Session: Sendable {
     /// Builds merged telemetry for the provided lap.
     ///
     /// Fetches car data and position data, slices them to the lap window,
-    /// merges, interpolates, and computes distance.
+    /// merges, and computes distance.
     ///
     /// ```swift
     /// let lap = try await session.fastestLap(driver: "16")!
@@ -116,7 +113,8 @@ public struct Session: Sendable {
     /// ```
     ///
     /// - Parameter lap: The ``Lap`` to extract telemetry for.
-    /// - Returns: A ``TelemetryTrace`` containing the ordered samples for the lap.
+    /// - Returns: A ``TelemetryTrace`` containing the ordered samples for the lap,
+    ///   with ``TelemetryTrace/officialLapTime`` set from ``Lap/lapTime``.
     public func telemetry(for lap: Lap) async throws -> TelemetryTrace {
         async let carData = backend.fetchCarData(for: ref)
         async let positionData = backend.fetchPositionData(for: ref)
@@ -132,13 +130,13 @@ public struct Session: Sendable {
         }
 
         let merged = telemetryMerger.merge(carSamples: slicedCar, positionSamples: slicedPosition, lap: lap)
-        let interpolated = interpolator.interpolate(samples: merged)
-        let distanceReady = distanceCalculator.applyingDistance(to: interpolated)
+        let distanceReady = distanceCalculator.applyingDistance(to: merged)
 
         return TelemetryTrace(
             driverNumber: lap.driverNumber,
             lapNumber: lap.lapNumber,
-            samples: distanceReady
+            samples: distanceReady,
+            officialLapTime: lap.lapTime
         )
     }
 
