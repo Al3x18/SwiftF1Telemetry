@@ -4,7 +4,7 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.2.0`
+Current documented release: `0.2.1`
 
 ## Documentation
 
@@ -44,7 +44,7 @@ Add the package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.2.0")
+    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.2.1")
 ]
 ```
 
@@ -130,14 +130,14 @@ swift run f1-cli 2024 Monza Q 16
 This package follows the standard Swift Package Manager versioning model:
 
 - use Semantic Versioning
-- create Git tags such as `0.1.0`, `0.1.1`, `0.1.2`, `0.1.3`, `0.2.0`
+- create Git tags such as `0.1.0`, `0.1.1`, `0.1.2`, `0.1.3`, `0.2.0`, `0.2.1`
 - publish GitHub Releases from those tags
 - treat the Git tag as the authoritative package version
 
 Example dependency declaration:
 
 ```swift
-.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.2.0")
+.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.2.1")
 ```
 
 `Package.swift` does not contain a version field, and that is correct for Swift packages.
