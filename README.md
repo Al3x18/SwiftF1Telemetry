@@ -1,4 +1,7 @@
-# SwiftF1Telemetry
+<p align="center">
+  <img src="assets/SwiftF1Icon.png" width="124" alt="SwiftF1Telemetry icon" /><br>
+  <b style="font-size:2em;">SwiftF1Telemetry</b>
+</p>
 
 `SwiftF1Telemetry` is a pure Swift package for loading, parsing, caching, and processing Formula 1 telemetry data directly on device.
 
