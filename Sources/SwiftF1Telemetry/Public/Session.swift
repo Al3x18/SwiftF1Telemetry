@@ -84,19 +84,7 @@ public struct Session: Sendable {
     /// - Parameter driver: The driver's racing number (e.g. `"1"`, `"16"`, `"55"`).
     /// - Returns: The ``Lap`` with the shortest `lapTime` among accurate laps, or `nil`.
     public func fastestLap(driver: String) async throws -> Lap? {
-        let driverLaps = try await laps()
-            .filter { $0.driverNumber == driver && $0.isAccurate }
-
-        return driverLaps.min { lhs, rhs in
-            switch (lhs.lapTime, rhs.lapTime) {
-            case let (.some(left), .some(right)):
-                return left < right
-            case (.some, .none):
-                return true
-            default:
-                return false
-            }
-        }
+        fastestLap(for: driver, in: try await laps())
     }
 
     /// Builds merged telemetry for the provided lap.
@@ -116,28 +104,8 @@ public struct Session: Sendable {
     /// - Returns: A ``TelemetryTrace`` containing the ordered samples for the lap,
     ///   with ``TelemetryTrace/officialLapTime`` set from ``Lap/lapTime``.
     public func telemetry(for lap: Lap) async throws -> TelemetryTrace {
-        async let carData = backend.fetchCarData(for: ref)
-        async let positionData = backend.fetchPositionData(for: ref)
-
-        let carSamples = try carDataParser.parseSamples(from: try await carData)
-        let positionSamples = try positionParser.parseSamples(from: try await positionData)
-
-        let slicedCar = lapSlicer.sliceCarSamples(carSamples, for: lap)
-        let slicedPosition = lapSlicer.slicePositionSamples(positionSamples, for: lap)
-
-        guard !slicedCar.isEmpty else {
-            throw F1TelemetryError.telemetryUnavailable(driver: lap.driverNumber, lap: lap.lapNumber)
-        }
-
-        let merged = telemetryMerger.merge(carSamples: slicedCar, positionSamples: slicedPosition, lap: lap)
-        let distanceReady = distanceCalculator.applyingDistance(to: merged)
-
-        return TelemetryTrace(
-            driverNumber: lap.driverNumber,
-            lapNumber: lap.lapNumber,
-            samples: distanceReady,
-            officialLapTime: lap.lapTime
-        )
+        let data = try await fetchSessionData()
+        return try buildTelemetryTrace(for: lap, carSamples: data.car, positionSamples: data.position)
     }
 
     /// Compares two telemetry traces aligned on shared lap progress.
@@ -176,10 +144,11 @@ public struct Session: Sendable {
     ///   - comparedLap: The ``Lap`` compared against the baseline.
     /// - Returns: A ``TelemetryComparison`` with aligned samples and deltas.
     public func compareTelemetry(referenceLap: Lap, comparedLap: Lap) async throws -> TelemetryComparison {
-        async let referenceTelemetry = telemetry(for: referenceLap)
-        async let comparedTelemetry = telemetry(for: comparedLap)
-
-        return try compare(reference: try await referenceTelemetry, compared: try await comparedTelemetry)
+        let data = try await fetchSessionData()
+        return try compare(
+            reference: buildTelemetryTrace(for: referenceLap, carSamples: data.car, positionSamples: data.position),
+            compared: buildTelemetryTrace(for: comparedLap, carSamples: data.car, positionSamples: data.position)
+        )
     }
 
     /// Compares the fastest valid laps for the two specified drivers.
@@ -202,14 +171,57 @@ public struct Session: Sendable {
     ///   - comparedDriver: Racing number of the compared driver (e.g. `"55"`).
     /// - Returns: A ``TelemetryComparison`` with aligned samples and deltas.
     public func compareFastestLaps(referenceDriver: String, comparedDriver: String) async throws -> TelemetryComparison {
-        guard let referenceLap = try await fastestLap(driver: referenceDriver) else {
+        async let allLaps = laps()
+        async let data = fetchSessionData()
+
+        let resolvedLaps = try await allLaps
+
+        guard let referenceLap = fastestLap(for: referenceDriver, in: resolvedLaps) else {
             throw F1TelemetryError.noLapsAvailable(driver: referenceDriver)
         }
 
-        guard let comparedLap = try await fastestLap(driver: comparedDriver) else {
+        guard let comparedLap = fastestLap(for: comparedDriver, in: resolvedLaps) else {
             throw F1TelemetryError.noLapsAvailable(driver: comparedDriver)
         }
 
-        return try await compareTelemetry(referenceLap: referenceLap, comparedLap: comparedLap)
+        let sessionData = try await data
+        return try compare(
+            reference: buildTelemetryTrace(for: referenceLap, carSamples: sessionData.car, positionSamples: sessionData.position),
+            compared: buildTelemetryTrace(for: comparedLap, carSamples: sessionData.car, positionSamples: sessionData.position)
+        )
+    }
+
+    private func fetchSessionData() async throws -> (car: [CarSample], position: [PositionSample]) {
+        async let carData = backend.fetchCarData(for: ref)
+        async let positionData = backend.fetchPositionData(for: ref)
+        return (
+            car: try carDataParser.parseSamples(from: try await carData),
+            position: try positionParser.parseSamples(from: try await positionData)
+        )
+    }
+
+    private func fastestLap(for driver: String, in laps: [Lap]) -> Lap? {
+        laps
+            .filter { $0.driverNumber == driver && $0.isAccurate && $0.lapTime != nil }
+            .min { $0.lapTime! < $1.lapTime! }
+    }
+
+    private func buildTelemetryTrace(for lap: Lap, carSamples: [CarSample], positionSamples: [PositionSample]) throws -> TelemetryTrace {
+        let slicedCar = lapSlicer.sliceCarSamples(carSamples, for: lap)
+        let slicedPosition = lapSlicer.slicePositionSamples(positionSamples, for: lap)
+
+        guard !slicedCar.isEmpty else {
+            throw F1TelemetryError.telemetryUnavailable(driver: lap.driverNumber, lap: lap.lapNumber)
+        }
+
+        let merged = telemetryMerger.merge(carSamples: slicedCar, positionSamples: slicedPosition, lap: lap)
+        let distanceReady = distanceCalculator.applyingDistance(to: merged)
+
+        return TelemetryTrace(
+            driverNumber: lap.driverNumber,
+            lapNumber: lap.lapNumber,
+            samples: distanceReady,
+            officialLapTime: lap.lapTime
+        )
     }
 }
