@@ -11,7 +11,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- `resolveSession` now caches the season index (`Index.json`) for past years — repeated session resolution for completed seasons no longer requires a network request
+- `resolveSession` now caches the season index (`Index.json`) for past years, repeated session resolution for completed seasons no longer requires a network request
 - Current and future season indices are always fetched from the network to avoid stale data when new meetings are added mid-season
 - `SwiftF1TelemetryVersion.current` updated to `0.3.2`
 
@@ -44,7 +44,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ### Changed
 
 - `TelemetrySample` stored properties changed from `let` to `var` for idiomatic struct copy-and-mutate — `Sendable`, `Hashable`, and `Codable` conformance unchanged
-- removed `Interpolator` from the processing pipeline — it was a stub that only duplicated a sort already performed by `TelemetryMerger` and `DistanceCalculator`
+- removed `Interpolator` from the processing pipeline, it was a stub that only duplicated a sort already performed by `TelemetryMerger` and `DistanceCalculator`
 - `Session.telemetry(for:)` now passes `lap.lapTime` as `officialLapTime` into the resulting `TelemetryTrace`
 - `SwiftF1TelemetryVersion.current` updated to `0.3.0`
 
