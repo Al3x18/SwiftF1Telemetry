@@ -4,7 +4,7 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.2.1`
+Current documented release: `0.3.0`
 
 This page is the technical deep dive. For installation, quick start, and day-to-day usage snippets, use the repository [README](../README.md).
 
@@ -184,9 +184,8 @@ Processing components:
 
 - lap slicing
 - telemetry merge
-- interpolation stub
-- distance calculation
-- telemetry comparison alignment and delta calculation
+- distance calculation (physical distance-based alignment)
+- telemetry comparison with official lap-time normalization
 
 ## Accuracy and Validation
 
@@ -212,7 +211,6 @@ Known gaps include:
 - total lap table completeness is still behind FastF1 in some sessions
 - generated/incomplete laps are not yet reconstructed as thoroughly
 - pit in/out and session interruption handling is still simpler than FastF1
-- interpolation behavior is currently minimal
 - some edge-case laps may still differ from FastF1 outside the validated path
 - Linux support still needs broader automated validation
 - Android support is still at the core-portability stage rather than app-integration stage
@@ -231,7 +229,6 @@ Short-term priorities:
 
 - improve lap table parity with FastF1
 - port more lap-building heuristics
-- improve interpolation and merge fidelity
 - expand validation across multiple weekends and session types
 - improve README examples and add more tests
 - strengthen comparison validation against FastF1-style reference plots on more sessions
