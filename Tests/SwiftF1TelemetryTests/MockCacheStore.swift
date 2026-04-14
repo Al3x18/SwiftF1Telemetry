@@ -15,4 +15,8 @@ actor MockCacheStore: CacheStore {
     func removeAll() async throws {
         storage.removeAll()
     }
+
+    func totalSizeInBytes() async throws -> Int {
+        storage.values.reduce(0) { $0 + $1.count }
+    }
 }
