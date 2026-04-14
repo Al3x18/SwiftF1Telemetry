@@ -1,5 +1,16 @@
 import Foundation
 
+/// The type of session within a race weekend.
+///
+/// Pass a session type when resolving a session from ``F1Client``:
+///
+/// ```swift
+/// let session = try await client.session(
+///     year: 2024,
+///     meeting: "Monza",
+///     session: .qualifying
+/// )
+/// ```
 public enum SessionType: String, Sendable, Codable {
     case practice1 = "FP1"
     case practice2 = "FP2"
@@ -10,11 +21,25 @@ public enum SessionType: String, Sendable, Codable {
     case race = "R"
 }
 
+/// Stable reference that uniquely identifies a resolved session in the archive.
+///
+/// You normally don't create this yourself — it is provided by ``Session/ref``
+/// after resolving a session:
+///
+/// ```swift
+/// let session = try await client.session(year: 2024, meeting: "Monza", session: .race)
+/// print(session.ref.archivePath)
+/// ```
 public struct SessionRef: Sendable, Hashable, Codable {
+    /// Season year (e.g. `2024`).
     public let year: Int
+    /// Meeting name used for resolution (e.g. `"Monza"`).
     public let meeting: String
+    /// The type of session within the meeting.
     public let sessionType: SessionType
+    /// Upstream identifier for this session.
     public let backendIdentifier: String
+    /// Archive path used to fetch session data.
     public let archivePath: String
 
     public init(
@@ -32,11 +57,25 @@ public struct SessionRef: Sendable, Hashable, Codable {
     }
 }
 
+/// Human-readable metadata for a resolved session.
+///
+/// Accessible via ``Session/metadata``:
+///
+/// ```swift
+/// let session = try await client.session(year: 2024, meeting: "Monza", session: .race)
+/// print(session.metadata.officialName)   // e.g. "FORMULA 1 GRAN PREMIO D'ITALIA 2024"
+/// print(session.metadata.circuitName)    // e.g. "Monza"
+/// ```
 public struct SessionMetadata: Sendable, Hashable, Codable {
+    /// The official name of the event (e.g. `"FORMULA 1 GRAN PREMIO D'ITALIA 2024"`).
     public let officialName: String
+    /// The circuit short name (e.g. `"Monza"`).
     public let circuitName: String
+    /// Scheduled session start time, or `nil` if unavailable.
     public let scheduledStart: Date?
+    /// Actual session start time, or `nil` if unavailable.
     public let actualStart: Date?
+    /// IANA timezone identifier for the venue, or `nil` if unavailable.
     public let timezoneIdentifier: String?
 
     public init(
