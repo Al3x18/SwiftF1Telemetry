@@ -7,6 +7,30 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-14
+
+### Fixed
+
+- `TelemetryComparison.finalDelta` now matches the official lap-time gap instead of drifting due to telemetry clock misalignment
+- `DistanceCalculator` computes `relativeDistance` from physical distance (`distance / totalDistance`) instead of array index ratio — two traces with different sample counts now align at the same track position
+- `TelemetryComparisonCalculator` normalizes each trace's `lapTime` values to the official `Lap.lapTime` at boundaries, ensuring `finalDelta` and the full delta curve converge to the real timing gap
+
+### Added
+
+- `TelemetryTrace.officialLapTime` property carries the official lap time from the timing feed through the processing pipeline
+- 8 new comparison and distance-calculator tests covering the Monza bug scenario, asymmetric sample counts, boundary normalization, backward compatibility, and full-pipeline end-to-end validation
+
+### Changed
+
+- `TelemetrySample` stored properties changed from `let` to `var` for idiomatic struct copy-and-mutate — `Sendable`, `Hashable`, and `Codable` conformance unchanged
+- removed `Interpolator` from the processing pipeline — it was a stub that only duplicated a sort already performed by `TelemetryMerger` and `DistanceCalculator`
+- `Session.telemetry(for:)` now passes `lap.lapTime` as `officialLapTime` into the resulting `TelemetryTrace`
+- `SwiftF1TelemetryVersion.current` updated to `0.3.0`
+
+### Removed
+
+- `Interpolator` struct and its `interpolate(samples:)` method (no-op stub)
+
 ## [0.2.1] - 2026-04-14
 
 ### Added
