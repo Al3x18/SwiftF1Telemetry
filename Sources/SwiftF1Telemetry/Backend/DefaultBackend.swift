@@ -23,7 +23,16 @@ struct DefaultBackend: BackendProtocol, Sendable {
         meeting: String,
         session: SessionType
     ) async throws -> SessionRef {
-        let indexData = try await fetchDirect(relativePath: "\(year)/Index.json")
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let indexData: Data
+        if year < currentYear {
+            let key = CacheKey(yearIndex: year)
+            indexData = try await cachedData(for: key) {
+                try await fetchDirect(relativePath: "\(year)/Index.json")
+            }
+        } else {
+            indexData = try await fetchDirect(relativePath: "\(year)/Index.json")
+        }
         let season = try decoder.decode(RawSeasonIndex.self, from: indexData)
 
         guard let matchedMeeting = season.meetings.first(where: { matchesMeeting(query: meeting, meeting: $0) }),
