@@ -16,6 +16,14 @@ struct CacheKey: Sendable, Hashable {
         self.version = version
     }
 
+    init(yearIndex year: Int, version: String = "v2") {
+        self.year = year
+        self.meeting = ""
+        self.session = ""
+        self.dataset = "index"
+        self.version = version
+    }
+
     var filename: String {
         let raw = "\(version)|\(year)|\(meeting.lowercased())|\(session)|\(dataset)"
         let digest = Insecure.SHA1.hash(data: Data(raw.utf8))
