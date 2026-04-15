@@ -89,7 +89,7 @@ public struct Session: Sendable {
     /// - Parameter driver: A racing number or name-based identifier.
     /// - Returns: The ``Lap`` with the shortest `lapTime` among accurate laps, or `nil`.
     public func fastestLap(driver: String) async throws -> Lap? {
-        let number = try await resolveDriverNumber(driver)
+        let number = try resolveDriverNumber(driver, using: try? await driverEntries())
         return fastestLap(for: number, in: try await laps())
     }
 
@@ -174,8 +174,11 @@ public struct Session: Sendable {
     ///   - comparedDriver: Racing number or name of the compared driver.
     /// - Returns: A ``TelemetryComparison`` with aligned samples and deltas.
     public func compareFastestLaps(referenceDriver: String, comparedDriver: String) async throws -> TelemetryComparison {
-        let refNumber = try await resolveDriverNumber(referenceDriver)
-        let cmpNumber = try await resolveDriverNumber(comparedDriver)
+        // Load and parse the driver list once, then resolve both identifiers
+        // against the same in-memory index.
+        let entries = try? await driverEntries()
+        let refNumber = try resolveDriverNumber(referenceDriver, using: entries)
+        let cmpNumber = try resolveDriverNumber(comparedDriver, using: entries)
 
         async let allLaps = laps()
         async let data = fetchSessionData()
@@ -223,20 +226,24 @@ public struct Session: Sendable {
     /// let same   = try await session.resolveDriverNumber("16")      // "16"
     /// ```
     public func resolveDriverNumber(_ identifier: String) async throws -> String {
+        // Keep the public API simple while reusing the same shared resolver logic.
+        try resolveDriverNumber(identifier, using: try? await driverEntries())
+    }
+
+    private func driverEntries() async throws -> [RawDriverEntry] {
+        let data = try await backend.fetchDriverList(for: ref)
+        return try driverListParser.parse(from: data)
+    }
+
+    private func resolveDriverNumber(_ identifier: String, using entries: [RawDriverEntry]?) throws -> String {
+        // Numeric values are already canonical racing numbers.
         if identifier.allSatisfy(\.isNumber) { return identifier }
 
-        do {
-            let data = try await backend.fetchDriverList(for: ref)
-            let entries = try driverListParser.parse(from: data)
-            let query = identifier.lowercased()
-
-            if let match = entries.first(where: { entry in
-                matchesDriver(query: query, entry: entry)
-            }) {
-                return match.racingNumber
-            }
-        } catch {
-            // DriverList unavailable — fall through to error below
+        let query = identifier.lowercased()
+        if let match = entries?.first(where: { entry in
+            matchesDriver(query: query, entry: entry)
+        }) {
+            return match.racingNumber
         }
 
         throw F1TelemetryError.noLapsAvailable(driver: identifier)
