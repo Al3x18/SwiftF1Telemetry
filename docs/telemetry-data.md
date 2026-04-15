@@ -2,6 +2,11 @@
 
 This document explains which telemetry data is currently available for a lap, how to extract it, and what users should expect when working with it.
 
+## When to read this page
+
+- You are building charts, overlays, or telemetry analysis views.
+- You need channel-level expectations, optional fields, and comparison semantics.
+
 ## Typical Flow
 
 The standard extraction flow is:

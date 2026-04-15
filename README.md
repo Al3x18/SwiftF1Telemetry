@@ -7,12 +7,16 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.3.2`
+Current documented release: `0.4.0`
 
 ## Documentation
 
 - [Package Overview](docs/overview.md)
 - [API Reference](docs/api.md)
+- [API: Client and Discovery](docs/api/client-and-discovery.md)
+- [API: Session and Core Models](docs/api/session-and-core-models.md)
+- [API: Telemetry and Comparison](docs/api/telemetry-and-comparison.md)
+- [API: Errors and Versioning](docs/api/errors-and-versioning.md)
 - [Telemetry Data Guide](docs/telemetry-data.md)
 - [Platform Support](docs/platform-support.md)
 - [Contributing Guide](CONTRIBUTING.md)
@@ -26,7 +30,9 @@ Current documented release: `0.3.2`
 Implemented:
 
 - Real session resolution from archive data
-- Fastest-lap lookup and telemetry extraction
+- Discovery APIs for available years, events, sessions, and drivers
+- Enriched driver discovery (number, name, surname, abbreviation, team)
+- Fastest-lap lookup and telemetry extraction (by driver number or name-based identifier)
 - Two-lap / two-driver fastest-lap telemetry comparison
 - Chart-ready telemetry and comparison series
 - Disk caching with configurable storage profiles
@@ -46,7 +52,7 @@ Add the package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.3.2")
+    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.0")
 ]
 ```
 
@@ -106,10 +112,33 @@ print("Reference speed points:", comparison.referenceSpeedSeriesByDistance().cou
 print("Compared speed points:", comparison.comparedSpeedSeriesByDistance().count)
 ```
 
+Driver lookup supports number, surname, and abbreviation:
+
+```swift
+let byNumber = try await session.fastestLap(driver: "16")
+let bySurname = try await session.fastestLap(driver: "Leclerc")
+let byAbbreviation = try await session.fastestLap(driver: "LEC")
+```
+
+And you can guide users through discovery instead of asking them to guess input values:
+
+```swift
+let years = try await client.availableYears()
+let events = try await client.availableEvents(in: 2024)
+let sessions = try await client.availableSessions(in: 2024, event: "Monza")
+let drivers = try await client.availableDrivers(in: 2024, event: "Monza", session: .qualifying)
+```
+
+Discovery APIs throw typed `F1TelemetryError` values when the requested year, event, session, or driver list is not available, so callers can guide users without falling back to generic network error handling.
+
 For complete technical documentation, see:
 
 - [docs/overview.md](docs/overview.md)
 - [docs/api.md](docs/api.md)
+- [docs/api/client-and-discovery.md](docs/api/client-and-discovery.md)
+- [docs/api/session-and-core-models.md](docs/api/session-and-core-models.md)
+- [docs/api/telemetry-and-comparison.md](docs/api/telemetry-and-comparison.md)
+- [docs/api/errors-and-versioning.md](docs/api/errors-and-versioning.md)
 - [docs/telemetry-data.md](docs/telemetry-data.md)
 - [docs/platform-support.md](docs/platform-support.md)
 
@@ -127,19 +156,39 @@ Run the CLI smoke test with:
 swift run f1-cli 2024 Monza Q 16
 ```
 
+Try the discovery flow with:
+
+```bash
+swift run f1-cli discover
+swift run f1-cli discover 2024
+swift run f1-cli discover 2024 Monza
+swift run f1-cli discover 2024 Monza Q
+```
+
+Telemetry lookup also accepts names:
+
+```bash
+swift run f1-cli 2024 Monza Q 16
+swift run f1-cli 2024 Monza Q Leclerc
+swift run f1-cli 2024 Monza Q LEC
+swift run f1-cli 2024 Monza Q Leclerc Sainz
+```
+
+The discovery command uses the archive-backed years and sessions that are actually available to the library. If a year or session is not exposed by the official archive, the CLI now reports that clearly instead of surfacing a raw HTTP error.
+
 ## Versioning
 
 This package follows the standard Swift Package Manager versioning model:
 
 - use Semantic Versioning
-- create Git tags such as `0.1.0`, `0.2.0`, `0.3.2`
+- create Git tags such as `0.1.0`, `0.2.0`, `0.3.2`, `0.4.0`
 - publish GitHub Releases from those tags
 - treat the Git tag as the authoritative package version
 
 Example dependency declaration:
 
 ```swift
-.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.3.2")
+.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.0")
 ```
 
 `Package.swift` does not contain a version field, and that is correct for Swift packages.

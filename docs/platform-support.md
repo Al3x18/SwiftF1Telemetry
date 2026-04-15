@@ -2,6 +2,11 @@
 
 This document explains the current platform status of `SwiftF1Telemetry` and what still needs to be built for non-Apple consumers.
 
+## When to read this page
+
+- You are evaluating platform viability before adopting the package.
+- You need a clear picture of Apple, Linux, Android, and Flutter readiness.
+
 ## Current Status
 
 ### Apple platforms

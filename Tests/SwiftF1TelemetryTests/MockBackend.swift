@@ -2,6 +2,43 @@ import Foundation
 @testable import SwiftF1Telemetry
 
 struct MockBackend: BackendProtocol {
+    func availableYears() async throws -> [Int] {
+        [2025, 2026]
+    }
+
+    func availableEvents(in year: Int) async throws -> [EventDescriptor] {
+        [
+            EventDescriptor(
+                year: year,
+                name: "Monza",
+                officialName: "\(year) Monza Grand Prix",
+                location: "Monza",
+                circuitName: "Monza"
+            )
+        ]
+    }
+
+    func availableSessions(in year: Int, event: String) async throws -> [SessionDescriptor] {
+        [
+            SessionDescriptor(
+                year: year,
+                eventName: "Monza",
+                sessionType: .qualifying,
+                name: "Qualifying",
+                startDate: nil,
+                endDate: nil
+            ),
+            SessionDescriptor(
+                year: year,
+                eventName: "Monza",
+                sessionType: .race,
+                name: "Race",
+                startDate: nil,
+                endDate: nil
+            ),
+        ]
+    }
+
     func resolveSession(year: Int, meeting: String, session: SessionType) async throws -> SessionRef {
         SessionRef(
             year: year,
@@ -57,5 +94,12 @@ struct MockBackend: BackendProtocol {
             PositionSample(driverNumber: "55", sessionTime: 152, date: nil, x: 318, y: 42, z: 0, status: "OnTrack"),
             PositionSample(driverNumber: "55", sessionTime: 180, date: nil, x: 408, y: 92, z: 0, status: "OnTrack"),
         ])
+    }
+
+    func fetchDriverList(for session: SessionRef) async throws -> Data {
+        let json = """
+        00:00:01.000{"16":{"RacingNumber":"16","FirstName":"Charles","LastName":"Leclerc","FullName":"Charles LECLERC","Tla":"LEC","BroadcastName":"C LECLERC","TeamName":"Ferrari","TeamColour":"E80020","CountryCode":"MON"},"55":{"RacingNumber":"55","FirstName":"Carlos","LastName":"Sainz","FullName":"Carlos SAINZ","Tla":"SAI","BroadcastName":"C SAINZ","TeamName":"Ferrari","TeamColour":"E80020","CountryCode":"ESP"}}
+        """
+        return Data(json.utf8)
     }
 }

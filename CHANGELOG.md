@@ -7,6 +7,50 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-15
+
+### Added
+
+- public discovery APIs on `F1Client`:
+  - `availableYears()`
+  - `availableEvents(in:)`
+  - `availableSessions(in:event:)`
+  - `availableDrivers(in:event:session:)`
+- public discovery models:
+  - `EventDescriptor`
+  - `SessionDescriptor`
+  - `DriverDescriptor`
+- CLI discovery flow:
+  - `swift run f1-cli discover`
+  - `swift run f1-cli discover <year>`
+  - `swift run f1-cli discover <year> <event>`
+  - `swift run f1-cli discover <year> <event> <session>`
+- driver-list parsing from archive `DriverList.jsonStream` to enrich discovery output
+- public `Session.resolveDriverNumber(_:)` for resolving driver identifiers (number, surname, abbreviation, full name)
+- test coverage for the new discovery APIs
+
+### Changed
+
+- archive session decoding is now more tolerant of incomplete official index entries with missing `Name`, `Key`, or `Path`
+- only archive sessions that the library can actually open are surfaced in discovery
+- discovery APIs now throw typed public errors for unavailable years, events, sessions, and drivers
+- `f1-cli discover` now renders these failures as user-facing messages instead of raw enum dumps or HTTP details
+- `DriverDescriptor` now includes optional driver profile fields:
+  - `firstName`
+  - `lastName`
+  - `fullName`
+  - `abbreviation`
+  - `broadcastName`
+  - `teamName`
+  - `teamColour`
+  - `countryCode`
+- `F1Client.availableDrivers(in:event:session:)` now returns enriched driver descriptors when the driver list feed is available
+- `Session.fastestLap(driver:)` and `Session.compareFastestLaps(referenceDriver:comparedDriver:)` now accept name-based driver identifiers in addition to racing numbers
+- `f1-cli` telemetry and compare flows now accept driver numbers, abbreviations, and surnames; discovery output now prints enriched driver details when available
+- expanded tests for discovery models, driver-list parsing integration, and name-based driver resolution
+- README, overview, and API docs now document the discovery flow
+- `SwiftF1TelemetryVersion.current` updated to `0.4.0`
+
 ## [0.3.2] - 2026-04-15
 
 ### Changed

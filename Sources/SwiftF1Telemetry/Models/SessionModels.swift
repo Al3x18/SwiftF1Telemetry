@@ -153,14 +153,14 @@ struct RawCircuit: Sendable, Codable {
 }
 
 struct RawArchiveSession: Sendable, Codable {
-    let key: Int
+    let key: Int?
     let type: String
     let number: Int?
-    let name: String
-    let startDate: String
-    let endDate: String
-    let gmtOffset: String
-    let path: String
+    let name: String?
+    let startDate: String?
+    let endDate: String?
+    let gmtOffset: String?
+    let path: String?
 
     enum CodingKeys: String, CodingKey {
         case key = "Key"

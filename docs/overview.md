@@ -4,9 +4,14 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.3.2`
+Current documented release: `0.4.0`
 
 This page is the technical deep dive. For installation, quick start, and day-to-day usage snippets, use the repository [README](../README.md).
+
+## When to read this page
+
+- You want architecture context before integrating the package.
+- You need current limitations, validation scope, and roadmap details.
 
 ## Why This Package Exists
 
@@ -26,6 +31,7 @@ The long-term goal is to make high-quality F1 telemetry analysis possible in Swi
 - Async/await API
 - Strongly typed public models
 - Real archive-backed session resolution
+- Archive-backed discovery APIs for years, events, sessions, and drivers
 - Raw payload disk cache
 - Configurable cache size profiles
 - Fastest-lap lookup per driver
@@ -57,6 +63,11 @@ SwiftF1Telemetry/
 ├─ docs/
 │  ├─ overview.md
 │  ├─ api.md
+│  ├─ api/
+│  │  ├─ client-and-discovery.md
+│  │  ├─ session-and-core-models.md
+│  │  ├─ telemetry-and-comparison.md
+│  │  └─ errors-and-versioning.md
 │  ├─ telemetry-data.md
 │  └─ platform-support.md
 ├─ Sources/
@@ -148,11 +159,14 @@ This is the API consumed by apps and tools:
 - `Lap`
 - `TelemetryTrace`
 - `TelemetryComparison`
+- discovery models
 - chart adapters
 
 ### Backend Layer
 
 The backend resolves sessions and fetches raw datasets without leaking upstream details into the public API. On cold cache, each fetch function uses `async let` to parallelise its internal HTTP requests, so the total wait time equals the slowest single request rather than the sum of all requests. Season index resolution is cached for past years (immutable data) while the current season's index is always fetched from the network to pick up newly added meetings.
+
+Discovery intentionally exposes only archive entries that the library can actually use. Years, sessions, and drivers that are missing or blocked upstream are surfaced as typed public errors instead of leaking raw HTTP failures into the API boundary.
 
 ### Transport Layer
 
@@ -186,6 +200,7 @@ Processing components:
 - telemetry merge
 - distance calculation (physical distance-based alignment)
 - telemetry comparison with official lap-time normalization
+- discovery filtering based on archive availability
 
 ## Accuracy and Validation
 

@@ -31,6 +31,7 @@ public struct Session: Sendable {
     private let timingParser: TimingParser
     private let carDataParser: CarDataParser
     private let positionParser: PositionParser
+    private let driverListParser: DriverListParser
     private let lapSlicer: LapSlicer
     private let telemetryMerger: TelemetryMerger
     private let distanceCalculator: DistanceCalculator
@@ -43,6 +44,7 @@ public struct Session: Sendable {
         timingParser: TimingParser = TimingParser(),
         carDataParser: CarDataParser = CarDataParser(),
         positionParser: PositionParser = PositionParser(),
+        driverListParser: DriverListParser = DriverListParser(),
         lapSlicer: LapSlicer = LapSlicer(),
         telemetryMerger: TelemetryMerger = TelemetryMerger(),
         distanceCalculator: DistanceCalculator = DistanceCalculator(),
@@ -54,6 +56,7 @@ public struct Session: Sendable {
         self.timingParser = timingParser
         self.carDataParser = carDataParser
         self.positionParser = positionParser
+        self.driverListParser = driverListParser
         self.lapSlicer = lapSlicer
         self.telemetryMerger = telemetryMerger
         self.distanceCalculator = distanceCalculator
@@ -73,18 +76,21 @@ public struct Session: Sendable {
         return try timingParser.parseLaps(from: data).map { $0.toPublicLap() }
     }
 
-    /// Returns the fastest accurate lap for the specified driver number, if one exists.
+    /// Returns the fastest accurate lap for the specified driver, if one exists.
+    ///
+    /// The `driver` parameter accepts a racing number, last name, abbreviation, or full name:
     ///
     /// ```swift
-    /// if let fastest = try await session.fastestLap(driver: "16") {
-    ///     print("Best lap: \(fastest.lapTime ?? 0)s")
-    /// }
+    /// let byNumber = try await session.fastestLap(driver: "16")
+    /// let byName   = try await session.fastestLap(driver: "Leclerc")
+    /// let byAbbrev = try await session.fastestLap(driver: "LEC")
     /// ```
     ///
-    /// - Parameter driver: The driver's racing number (e.g. `"1"`, `"16"`, `"55"`).
+    /// - Parameter driver: A racing number or name-based identifier.
     /// - Returns: The ``Lap`` with the shortest `lapTime` among accurate laps, or `nil`.
     public func fastestLap(driver: String) async throws -> Lap? {
-        fastestLap(for: driver, in: try await laps())
+        let number = try await resolveDriverNumber(driver)
+        return fastestLap(for: number, in: try await laps())
     }
 
     /// Builds merged telemetry for the provided lap.
@@ -154,33 +160,33 @@ public struct Session: Sendable {
     /// Compares the fastest valid laps for the two specified drivers.
     ///
     /// The highest-level comparison API — resolves fastest laps, fetches telemetry,
-    /// and aligns them in a single call:
+    /// and aligns them in a single call. Accepts racing numbers or name-based identifiers:
     ///
     /// ```swift
     /// let comparison = try await session.compareFastestLaps(
-    ///     referenceDriver: "16",
-    ///     comparedDriver: "55"
+    ///     referenceDriver: "Leclerc",
+    ///     comparedDriver: "Sainz"
     /// )
-    /// print("Final delta: \(comparison.finalDelta ?? 0)s")
-    ///
-    /// let delta = comparison.deltaSeriesByDistance()   // ready for charting
     /// ```
     ///
     /// - Parameters:
-    ///   - referenceDriver: Racing number of the baseline driver (e.g. `"16"`).
-    ///   - comparedDriver: Racing number of the compared driver (e.g. `"55"`).
+    ///   - referenceDriver: Racing number or name of the baseline driver.
+    ///   - comparedDriver: Racing number or name of the compared driver.
     /// - Returns: A ``TelemetryComparison`` with aligned samples and deltas.
     public func compareFastestLaps(referenceDriver: String, comparedDriver: String) async throws -> TelemetryComparison {
+        let refNumber = try await resolveDriverNumber(referenceDriver)
+        let cmpNumber = try await resolveDriverNumber(comparedDriver)
+
         async let allLaps = laps()
         async let data = fetchSessionData()
 
         let resolvedLaps = try await allLaps
 
-        guard let referenceLap = fastestLap(for: referenceDriver, in: resolvedLaps) else {
+        guard let referenceLap = fastestLap(for: refNumber, in: resolvedLaps) else {
             throw F1TelemetryError.noLapsAvailable(driver: referenceDriver)
         }
 
-        guard let comparedLap = fastestLap(for: comparedDriver, in: resolvedLaps) else {
+        guard let comparedLap = fastestLap(for: cmpNumber, in: resolvedLaps) else {
             throw F1TelemetryError.noLapsAvailable(driver: comparedDriver)
         }
 
@@ -204,6 +210,48 @@ public struct Session: Sendable {
         laps
             .filter { $0.driverNumber == driver && $0.isAccurate && $0.lapTime != nil }
             .min { $0.lapTime! < $1.lapTime! }
+    }
+
+    /// Resolves a driver identifier (number, last name, abbreviation, or full name)
+    /// to a racing number using the session's driver list.
+    ///
+    /// Returns the input unchanged if it already looks like a racing number or if
+    /// the driver list is unavailable.
+    ///
+    /// ```swift
+    /// let number = try await session.resolveDriverNumber("Leclerc") // "16"
+    /// let same   = try await session.resolveDriverNumber("16")      // "16"
+    /// ```
+    public func resolveDriverNumber(_ identifier: String) async throws -> String {
+        if identifier.allSatisfy(\.isNumber) { return identifier }
+
+        do {
+            let data = try await backend.fetchDriverList(for: ref)
+            let entries = try driverListParser.parse(from: data)
+            let query = identifier.lowercased()
+
+            if let match = entries.first(where: { entry in
+                matchesDriver(query: query, entry: entry)
+            }) {
+                return match.racingNumber
+            }
+        } catch {
+            // DriverList unavailable — fall through to error below
+        }
+
+        throw F1TelemetryError.noLapsAvailable(driver: identifier)
+    }
+
+    private func matchesDriver(query: String, entry: RawDriverEntry) -> Bool {
+        let candidates = [
+            entry.lastName,
+            entry.abbreviation,
+            entry.firstName,
+            entry.fullName,
+            entry.broadcastName,
+        ].compactMap { $0?.lowercased() }
+
+        return candidates.contains(where: { $0 == query || $0.contains(query) || query.contains($0) })
     }
 
     private func buildTelemetryTrace(for lap: Lap, carSamples: [CarSample], positionSamples: [PositionSample]) throws -> TelemetryTrace {
