@@ -247,6 +247,8 @@ struct DefaultBackend: BackendProtocol, Sendable {
         if let actualStart = metadata.actualStart {
             return actualStart
         }
+        // Historical weekends can miss SessionData-derived actual start; use
+        // scheduled start so telemetry fetch can still proceed.
         if let scheduledStart = metadata.scheduledStart {
             return scheduledStart
         }
@@ -278,6 +280,8 @@ struct DefaultBackend: BackendProtocol, Sendable {
         guard !queryTokens.isEmpty else { return false }
         let candidateTokens = rawCandidates.flatMap(tokens)
         return queryTokens.allSatisfy { queryToken in
+            // For very short queries require an exact token match to prevent
+            // accidental matches against unrelated words (e.g. spa/spanish).
             if queryToken.count <= 3 {
                 return candidateTokens.contains(queryToken)
             }
