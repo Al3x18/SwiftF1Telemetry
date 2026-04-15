@@ -7,6 +7,22 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.1]
+
+### Changed
+
+- improved session metadata resilience for historical sessions:
+  - `SessionData.json` is now optional when building metadata envelopes
+  - session-start resolution now falls back to `scheduledStart` when `actualStart` is unavailable
+- hardened event discovery matching to avoid false positives from short queries (e.g. `"Spa"` no longer resolving to `"España"` due to broad token-prefix matching)
+- optimized name-based driver resolution in `Session`:
+  - internal driver-list loading is now reused across multi-driver flows
+  - `compareFastestLaps(referenceDriver:comparedDriver:)` resolves both identifiers from one shared driver index instead of loading/parsing twice
+- expanded regression coverage with dedicated meeting-matching tests:
+  - `shortQuerySpaDoesNotResolveToSpanishGrandPrix`
+  - `fullQueryBarcelonaStillResolvesSpanishGrandPrix`
+  - `longerPrefixMonzaMatchesItalianGrandPrix`
+
 ## [0.4.0] - 2026-04-15
 
 ### Added
