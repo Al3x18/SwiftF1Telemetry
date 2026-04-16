@@ -2,31 +2,31 @@ import Foundation
 import Testing
 @testable import SwiftF1Telemetry
 
-@Test func shortQuerySpaDoesNotResolveToSpanishGrandPrix() async throws {
-    let client = makeClientForMeetingMatching()
+@Test func spaQueryMatchesBelgianGrandPrixInsteadOfSpanishGrandPrix() async throws {
+    let client = makeMeetingMatchingClient()
 
     let sessions = try await client.availableSessions(in: 2023, event: "Spa")
-    #expect(sessions.isEmpty == false)
+    #expect(!sessions.isEmpty)
     #expect(Set(sessions.map(\.eventName)) == ["Belgian Grand Prix"])
 }
 
-@Test func fullQueryBarcelonaStillResolvesSpanishGrandPrix() async throws {
-    let client = makeClientForMeetingMatching()
+@Test func barcelonaQueryMatchesSpanishGrandPrixByLocation() async throws {
+    let client = makeMeetingMatchingClient()
 
     let sessions = try await client.availableSessions(in: 2023, event: "Barcelona")
-    #expect(sessions.isEmpty == false)
+    #expect(!sessions.isEmpty)
     #expect(Set(sessions.map(\.eventName)) == ["Spanish Grand Prix"])
 }
 
-@Test func longerPrefixMonzaMatchesItalianGrandPrix() async throws {
-    let client = makeClientForMeetingMatching()
+@Test func monzaQueryMatchesItalianGrandPrixByCircuitName() async throws {
+    let client = makeMeetingMatchingClient()
 
     let sessions = try await client.availableSessions(in: 2023, event: "Monza")
-    #expect(sessions.isEmpty == false)
+    #expect(!sessions.isEmpty)
     #expect(Set(sessions.map(\.eventName)) == ["Italian Grand Prix"])
 }
 
-private func makeClientForMeetingMatching() -> F1Client {
+private func makeMeetingMatchingClient() -> F1Client {
     let indexJSON = """
     {
       "Year": 2023,
