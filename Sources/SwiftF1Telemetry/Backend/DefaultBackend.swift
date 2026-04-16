@@ -181,6 +181,10 @@ struct DefaultBackend: BackendProtocol, Sendable {
         for key: CacheKey,
         fetcher: @Sendable () async throws -> Data
     ) async throws -> Data {
+        if configuration.cacheMode == .noCache {
+            return try await fetcher()
+        }
+
         if let data = try await cacheStore.data(for: key) {
             return data
         }

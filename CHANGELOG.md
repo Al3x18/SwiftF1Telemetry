@@ -7,6 +7,29 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.2] - YYYY-MM-DD
+
+### Changed
+
+- `F1Client.Configuration.CacheMode` now exposes:
+  - `.unlimited` to keep caching enabled with no size cap
+  - `.noCache` to fully bypass cache reads and writes
+- cache semantics were clarified and aligned in code:
+  - `.noCache` now reports `maxSizeInBytes = 0`
+  - `.unlimited` now reports `maxSizeInBytes = nil`
+- backend caching flow now short-circuits when `.noCache` is selected, fetching directly without touching the cache store
+- cache protocol file renamed from `CacheStore.swift` to `CacheStoreProtocol.swift` for clearer intent
+- cache/docs references updated to match the new cache mode names and behavior
+
+### Tested
+
+- added cache-mode regression tests for:
+  - `.noCache` bypass behavior (no cache read/write calls)
+  - `.noCache` zero-byte limit semantics
+  - `.unlimited` no-limit semantics
+  - bounded-mode size mappings and zero-limit eviction behavior
+- full package test suite passes
+
 ## [0.4.1] - 2026-04-16
 
 ### Changed

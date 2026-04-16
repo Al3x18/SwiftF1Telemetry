@@ -74,11 +74,12 @@ public struct Configuration: Sendable {
 
 ```swift
 public enum CacheMode: Sendable {
-    case disabled
+    case noCache
     case minimum
     case medium
     case large
     case extraLarge
+    case unlimited
 }
 ```
 
@@ -94,11 +95,12 @@ What the caller should expect:
 
 Cache modes:
 
-- `.disabled`: caching stays enabled with no size limit
+- `.noCache`: caching is fully bypassed (no reads/writes)
 - `.minimum`: up to `50 MB` and used by default
 - `.medium`: up to `100 MB`
 - `.large`: up to `200 MB`
 - `.extraLarge`: up to `400 MB`
+- `.unlimited`: caching stays enabled with no size limit
 
 ## Discovery API
 

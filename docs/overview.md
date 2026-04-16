@@ -208,7 +208,8 @@ Cache filenames are generated with a cross-platform hashing implementation so th
 
 The public configuration supports multiple cache policies:
 
-- `.disabled`: no size limit
+- `.noCache`: disables cache reads/writes
+- `.unlimited`: no size limit
 - `.minimum`: up to `50 MB` and used by default
 - `.medium`: up to `100 MB`
 - `.large`: up to `200 MB`
