@@ -3,6 +3,7 @@ import Foundation
 struct DefaultBackend: BackendProtocol, Sendable {
     private let baseURL = URL(string: "https://livetiming.formula1.com/static/")!
     private let minimumArchiveYear = 2018
+    private let meetingMatcher = MeetingMatcher()
     private let httpClient: HTTPClient
     private let cacheStore: CacheStore
     private let configuration: F1Client.Configuration
@@ -56,7 +57,7 @@ struct DefaultBackend: BackendProtocol, Sendable {
     func availableSessions(in year: Int, event: String) async throws -> [SessionDescriptor] {
         let season = try await availableSeasonIndex(for: year)
 
-        guard let meeting = season.meetings.first(where: { matchesMeeting(query: event, meeting: $0) }) else {
+        guard let meeting = meetingMatcher.bestMatch(for: event, in: season.meetings) else {
             throw F1TelemetryError.eventNotAvailable(year: year, event: event)
         }
 
@@ -88,7 +89,7 @@ struct DefaultBackend: BackendProtocol, Sendable {
     ) async throws -> SessionRef {
         let season = try await seasonIndex(for: year)
 
-        guard let matchedMeeting = season.meetings.first(where: { matchesMeeting(query: meeting, meeting: $0) }),
+        guard let matchedMeeting = meetingMatcher.bestMatch(for: meeting, in: season.meetings),
               let matchedSession = matchedMeeting.sessions.first(where: {
                   $0.path != nil && $0.key != nil && sessionType(for: $0) == session
               }),
@@ -253,42 +254,6 @@ struct DefaultBackend: BackendProtocol, Sendable {
             return scheduledStart
         }
         throw F1TelemetryError.invalidResponse(description: "Missing session start date for \(session.archivePath)")
-    }
-
-    private func matchesMeeting(query: String, meeting: RawMeeting) -> Bool {
-        let normalizedQuery = normalize(query)
-        let queryTokens = tokens(from: query)
-        let rawCandidates = [
-            meeting.name,
-            meeting.officialName,
-            meeting.location,
-            meeting.circuit.shortName,
-        ]
-
-        let normalizedCandidates = rawCandidates.map(normalize)
-        if normalizedCandidates.contains(normalizedQuery) {
-            return true
-        }
-
-        // Avoid overly broad substring matching (e.g. "spa" matching "españa")
-        // by only applying contains checks for longer queries.
-        if normalizedQuery.count >= 4,
-           normalizedCandidates.contains(where: { $0.contains(normalizedQuery) }) {
-            return true
-        }
-
-        guard !queryTokens.isEmpty else { return false }
-        let candidateTokens = rawCandidates.flatMap(tokens)
-        return queryTokens.allSatisfy { queryToken in
-            // For very short queries require an exact token match to prevent
-            // accidental matches against unrelated words (e.g. spa/spanish).
-            if queryToken.count <= 3 {
-                return candidateTokens.contains(queryToken)
-            }
-            return candidateTokens.contains(where: { candidate in
-                candidate == queryToken || candidate.hasPrefix(queryToken)
-            })
-        }
     }
 
     private func sessionType(for archiveSession: RawArchiveSession) -> SessionType? {
