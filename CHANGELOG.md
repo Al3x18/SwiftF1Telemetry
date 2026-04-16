@@ -7,13 +7,17 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [0.4.2] - YYYY-MM-DD
+## [0.4.2] - 2026-04-16
 
 ### Changed
 
 - `F1Client.Configuration.CacheMode` now exposes:
   - `.unlimited` to keep caching enabled with no size cap
   - `.noCache` to fully bypass cache reads and writes
+- fixed a misleading behavior from the previous `.disabled` mode:
+  - `.disabled` previously mapped to `maxSizeInBytes = nil`
+  - backend cache read/write paths were still active, so caching remained enabled with no size limit
+  - this could confuse callers expecting cache to be fully off
 - cache semantics were clarified and aligned in code:
   - `.noCache` now reports `maxSizeInBytes = 0`
   - `.unlimited` now reports `maxSizeInBytes = nil`
