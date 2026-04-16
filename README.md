@@ -167,7 +167,7 @@ The discovery command uses the archive-backed years and sessions that are actual
 This package follows the standard Swift Package Manager versioning model:
 
 - use Semantic Versioning
-- create Git tags such as `0.1.0`, `0.2.0`, `0.3.2`, `0.4.1`
+- create Git tags such as `1.0.0`, `1.0.1`
 - publish GitHub Releases from those tags
 - treat the Git tag as the authoritative package version
 
