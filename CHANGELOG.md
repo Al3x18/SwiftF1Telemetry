@@ -7,7 +7,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [0.4.1]
+## [0.4.1] - 2026-04-16
 
 ### Changed
 
@@ -19,9 +19,10 @@ and this project follows [Semantic Versioning](https://semver.org/).
   - internal driver-list loading is now reused across multi-driver flows
   - `compareFastestLaps(referenceDriver:comparedDriver:)` resolves both identifiers from one shared driver index instead of loading/parsing twice
 - expanded regression coverage with dedicated meeting-matching tests:
-  - `shortQuerySpaDoesNotResolveToSpanishGrandPrix`
-  - `fullQueryBarcelonaStillResolvesSpanishGrandPrix`
-  - `longerPrefixMonzaMatchesItalianGrandPrix`
+  - `spaQueryMatchesBelgianGrandPrixInsteadOfSpanishGrandPrix`
+  - `barcelonaQueryMatchesSpanishGrandPrixByLocation`
+  - `monzaQueryMatchesItalianGrandPrixByCircuitName`
+  - new `struct MeetingMatcher` in a separate file used to avoid error in event matching (e.g. "spa" matching "españa")
 - refocused `README.md` as the package landing page while keeping repository documentation centered in `docs/`
 - configured Swift Package Index external documentation through `.spi.yml`
 - reorganized repository documentation so `docs/overview.md` acts as the GitHub- and SPI-friendly entry point
