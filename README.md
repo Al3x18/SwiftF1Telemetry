@@ -171,14 +171,6 @@ This package follows the standard Swift Package Manager versioning model:
 - publish GitHub Releases from those tags
 - treat the Git tag as the authoritative package version
 
-Example dependency declaration:
-
-```swift
-.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.2")
-```
-
-`Package.swift` does not contain a version field, and that is correct for Swift packages.
-
 The repository includes:
 
 - `CHANGELOG.md` for release notes
