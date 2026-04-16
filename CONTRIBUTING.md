@@ -54,11 +54,12 @@ When contributing code:
 
 ## Public API Changes
 
+The package's public user documentation lives in the repository `docs/` folder.
+
 If you change the public API:
 
 - update `README.md` when the user-facing workflow changes
-- update `docs/api.md` for API shape changes
-- update `docs/telemetry-data.md` if telemetry behavior changes
+- update the relevant pages in `docs/`
 - update `CHANGELOG.md`
 - add or adjust tests
 

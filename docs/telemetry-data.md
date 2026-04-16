@@ -87,9 +87,9 @@ public struct TelemetrySample: Sendable, Hashable {
 ### Time Channels
 
 - `sessionTime`
-  - elapsed time on the session telemetry clock
+- elapsed time on the session telemetry clock
 - `lapTime`
-  - elapsed time since the start of the selected lap
+- elapsed time since the start of the selected lap
 
 What to expect:
 
@@ -100,17 +100,17 @@ What to expect:
 ### Car Channels
 
 - `speed`
-  - km/h
+- km/h
 - `rpm`
-  - engine RPM
+- engine RPM
 - `throttle`
-  - normalized throttle value from upstream telemetry
+- normalized throttle value from upstream telemetry
 - `brake`
-  - boolean brake state
+- boolean brake state
 - `drs`
-  - raw DRS state code
+- raw DRS state code
 - `gear`
-  - integer gear number
+- integer gear number
 
 What to expect:
 
@@ -134,9 +134,9 @@ What to expect:
 ### Derived Channels
 
 - `distance`
-  - accumulated lap distance
+- accumulated lap distance
 - `relativeDistance`
-  - normalized progress through the lap, usually between `0` and `1`
+- normalized progress through the lap, usually between `0` and `1`
 
 What to expect:
 

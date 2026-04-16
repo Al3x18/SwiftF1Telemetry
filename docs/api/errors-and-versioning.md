@@ -11,6 +11,17 @@ This section documents typed errors and version convenience APIs.
 
 ### `F1TelemetryError`
 
+The package exposes typed failures for:
+
+- unavailable years, events, sessions, or drivers
+- session resolution failures
+- invalid responses
+- network failures
+- parser failures
+- cache failures
+- missing laps or telemetry
+- internal invariant violations
+
 ```swift
 public enum F1TelemetryError: Error, Sendable, Equatable {
     case yearNotAvailable(year: Int)
@@ -49,7 +60,7 @@ Discovery-related cases:
 
 ```swift
 public enum SwiftF1TelemetryVersion {
-    public static let current = "0.4.0"
+    public static let current = "0.4.1"
 }
 ```
 

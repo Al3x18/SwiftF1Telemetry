@@ -22,6 +22,10 @@ and this project follows [Semantic Versioning](https://semver.org/).
   - `shortQuerySpaDoesNotResolveToSpanishGrandPrix`
   - `fullQueryBarcelonaStillResolvesSpanishGrandPrix`
   - `longerPrefixMonzaMatchesItalianGrandPrix`
+- refocused `README.md` as the package landing page while keeping repository documentation centered in `docs/`
+- configured Swift Package Index external documentation through `.spi.yml`
+- reorganized repository documentation so `docs/overview.md` acts as the GitHub- and SPI-friendly entry point
+- `SwiftF1TelemetryVersion.current` updated to `0.4.1`
 
 ## [0.4.0] - 2026-04-15
 

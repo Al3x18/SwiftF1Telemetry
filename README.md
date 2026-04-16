@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/SwiftF1Icon.png" width="134" alt="SwiftF1Telemetry icon" /><br>
+  <img src="assets/SwiftF1Icon.png" width="190" alt="SwiftF1Telemetry icon" /><br>
   <b style="font-size:3em;"><u>SwiftF1Telemetry</u></b>
 </p>
 
@@ -7,17 +7,16 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.4.0`
+Current documented release: `0.4.1`
 
 ## Documentation
 
-- [Package Overview](docs/overview.md)
-- [API Reference](docs/api.md)
-- [API: Client and Discovery](docs/api/client-and-discovery.md)
-- [API: Session and Core Models](docs/api/session-and-core-models.md)
-- [API: Telemetry and Comparison](docs/api/telemetry-and-comparison.md)
-- [API: Errors and Versioning](docs/api/errors-and-versioning.md)
-- [Telemetry Data Guide](docs/telemetry-data.md)
+- The official package documentation lives in the repository `docs/` folder and is intended to be the single source of truth for package usage and API guidance.
+- Start from [docs/overview.md](docs/overview.md) for the documentation hub.
+- Swift Package Index is configured to link to that external documentation.
+
+Repository guides:
+
 - [Platform Support](docs/platform-support.md)
 - [Contributing Guide](CONTRIBUTING.md)
 - [License](LICENSE)
@@ -44,15 +43,13 @@ In progress:
 - Broader cross-season and cross-session validation
 - Linux CI/runtime hardening and Android bridge work
 
-For full feature coverage, architecture, data sources, validation notes, and limitations, see [docs/overview.md](docs/overview.md).
-
 ## Installation
 
 Add the package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.0")
+    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.1")
 ]
 ```
 
@@ -131,17 +128,6 @@ let drivers = try await client.availableDrivers(in: 2024, event: "Monza", sessio
 
 Discovery APIs throw typed `F1TelemetryError` values when the requested year, event, session, or driver list is not available, so callers can guide users without falling back to generic network error handling.
 
-For complete technical documentation, see:
-
-- [docs/overview.md](docs/overview.md)
-- [docs/api.md](docs/api.md)
-- [docs/api/client-and-discovery.md](docs/api/client-and-discovery.md)
-- [docs/api/session-and-core-models.md](docs/api/session-and-core-models.md)
-- [docs/api/telemetry-and-comparison.md](docs/api/telemetry-and-comparison.md)
-- [docs/api/errors-and-versioning.md](docs/api/errors-and-versioning.md)
-- [docs/telemetry-data.md](docs/telemetry-data.md)
-- [docs/platform-support.md](docs/platform-support.md)
-
 ## Testing
 
 Run the test suite with:
@@ -181,14 +167,14 @@ The discovery command uses the archive-backed years and sessions that are actual
 This package follows the standard Swift Package Manager versioning model:
 
 - use Semantic Versioning
-- create Git tags such as `0.1.0`, `0.2.0`, `0.3.2`, `0.4.0`
+- create Git tags such as `0.1.0`, `0.2.0`, `0.3.2`, `0.4.1`
 - publish GitHub Releases from those tags
 - treat the Git tag as the authoritative package version
 
 Example dependency declaration:
 
 ```swift
-.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.0")
+.package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.1")
 ```
 
 `Package.swift` does not contain a version field, and that is correct for Swift packages.
@@ -202,4 +188,4 @@ The repository includes:
 
 ## Project Scope And Roadmap
 
-Detailed scope, known gaps, and roadmap are maintained in [docs/overview.md](docs/overview.md) to keep this README focused on installation and usage.
+Detailed package usage and API guidance live in [docs/overview.md](docs/overview.md).

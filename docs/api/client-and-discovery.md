@@ -146,6 +146,13 @@ Returns:
 
 - `[DriverDescriptor]`
 
+```swift
+let years = try await client.availableYears()
+let events = try await client.availableEvents(in: 2024)
+let sessions = try await client.availableSessions(in: 2024, event: "Monza")
+let drivers = try await client.availableDrivers(in: 2024, event: "Monza", session: .qualifying)
+```
+
 What the caller should expect:
 
 - driver numbers derived from real lap-backed session data

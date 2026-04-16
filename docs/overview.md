@@ -4,7 +4,7 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.4.0`
+Current documented release: `0.4.1`
 
 This page is the technical deep dive. For installation, quick start, and day-to-day usage snippets, use the repository [README](../README.md).
 
@@ -12,6 +12,15 @@ This page is the technical deep dive. For installation, quick start, and day-to-
 
 - You want architecture context before integrating the package.
 - You need current limitations, validation scope, and roadmap details.
+
+## Documentation Map
+
+- [Client and Discovery](api/client-and-discovery.md)
+- [Session and Core Models](api/session-and-core-models.md)
+- [Telemetry and Comparison](api/telemetry-and-comparison.md)
+- [Errors and Versioning](api/errors-and-versioning.md)
+- [Telemetry Data Guide](telemetry-data.md)
+- [Platform Support](platform-support.md)
 
 ## Why This Package Exists
 
@@ -62,7 +71,6 @@ SwiftF1Telemetry/
 ├─ LICENSE
 ├─ docs/
 │  ├─ overview.md
-│  ├─ api.md
 │  ├─ api/
 │  │  ├─ client-and-discovery.md
 │  │  ├─ session-and-core-models.md
@@ -86,12 +94,17 @@ SwiftF1Telemetry/
 
 ## Example Output
 
-For a real validated example:
-
 ```swift
+import SwiftF1Telemetry
+
+let client = F1Client()
 let session = try await client.session(year: 2024, meeting: "Monza", session: .qualifying)
-let lap = try await session.fastestLap(driver: "16")
-let telemetry = try await session.telemetry(for: lap!)
+
+guard let lap = try await session.fastestLap(driver: "16") else {
+    return
+}
+
+let telemetry = try await session.telemetry(for: lap)
 ```
 
 For a comparison flow:
@@ -112,6 +125,21 @@ At the time of validation, this resolved to:
 - Telemetry sample count: `314`
 
 These values were compared directly against FastF1 and matched on the same real session for lap number, lap time, sample count, and speed endpoints.
+
+For a chart-oriented usage pattern:
+
+```swift
+let speed = telemetry.speedSeriesByDistance()
+let track = telemetry.trackMap()
+```
+
+For lap-to-lap comparison output:
+
+```swift
+let delta = comparison.deltaSeriesByDistance()
+let referenceSpeed = comparison.referenceSpeedSeriesByDistance()
+let comparedSpeed = comparison.comparedSpeedSeriesByDistance()
+```
 
 ## CLI Usage
 
@@ -259,17 +287,5 @@ Long-term priorities:
 
 ## Contributing
 
-Contributions are welcome, especially around:
-
-- parser correctness
-- FastF1 parity checks
-- session edge cases
-- documentation
-- tests and fixtures
-
-See also:
-
 - [Contributing Guide](../CONTRIBUTING.md)
 - [MIT License](../LICENSE)
-
-If you contribute parser or lap-building logic derived from FastF1 behavior, please preserve attribution where appropriate.
