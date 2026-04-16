@@ -19,6 +19,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
   - `.unlimited` now reports `maxSizeInBytes = nil`
 - backend caching flow now short-circuits when `.noCache` is selected, fetching directly without touching the cache store
 - cache protocol file renamed from `CacheStore.swift` to `CacheStoreProtocol.swift` for clearer intent
+- moved `F1Client.Configuration` and `CacheMode` into `Public/F1ClientConfiguration.swift` to keep `F1Client.swift` focused on client behavior and improve readability
 - cache/docs references updated to match the new cache mode names and behavior
 
 ### Tested
