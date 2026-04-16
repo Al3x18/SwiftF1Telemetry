@@ -3,41 +3,6 @@ import Foundation
 extension F1Client {
     /// Configures networking, caching, and retry behavior for an ``F1Client``.
     public struct Configuration: Sendable {
-        /// Controls how much disk space the built-in raw payload cache may use.
-        public enum CacheMode: Sendable {
-            /// Disables on-disk caching entirely.
-            case noCache
-            /// Keeps up to 50 MB of cached data on disk.
-            case minimum
-            /// Keeps up to 100 MB of cached data on disk.
-            case medium
-            /// Keeps up to 200 MB of cached data on disk.
-            case large
-            /// Keeps up to 400 MB of cached data on disk.
-            case extraLarge
-            /// Keeps caching enabled with no size limit.
-            case unlimited
-
-            var maxSizeInBytes: Int? {
-                switch self {
-                case .noCache:
-                    // Cache is fully bypassed at the backend level; report 0 bytes
-                    // so any accidental direct use of the store evicts everything.
-                    return 0
-                case .minimum:
-                    return 50 * 1_024 * 1_024
-                case .medium:
-                    return 100 * 1_024 * 1_024
-                case .large:
-                    return 200 * 1_024 * 1_024
-                case .extraLarge:
-                    return 400 * 1_024 * 1_024
-                case .unlimited:
-                    return nil
-                }
-            }
-        }
-
         /// Directory where raw upstream payloads are cached on disk.
         public var cacheDirectory: URL
         /// Cache retention profile used by the built-in disk cache.
@@ -80,4 +45,39 @@ extension F1Client {
             self.userAgent = userAgent
         }
     }
+
+     /// Controls how much disk space the built-in raw payload cache may use.
+        public enum CacheMode: Sendable {
+            /// Disables on-disk caching entirely.
+            case noCache
+            /// Keeps up to 50 MB of cached data on disk.
+            case minimum
+            /// Keeps up to 100 MB of cached data on disk.
+            case medium
+            /// Keeps up to 200 MB of cached data on disk.
+            case large
+            /// Keeps up to 400 MB of cached data on disk.
+            case extraLarge
+            /// Keeps caching enabled with no size limit.
+            case unlimited
+
+            var maxSizeInBytes: Int? {
+                switch self {
+                case .noCache:
+                    // Cache is fully bypassed at the backend level; report 0 bytes
+                    // so any accidental direct use of the store evicts everything.
+                    return 0
+                case .minimum:
+                    return 50 * 1_024 * 1_024
+                case .medium:
+                    return 100 * 1_024 * 1_024
+                case .large:
+                    return 200 * 1_024 * 1_024
+                case .extraLarge:
+                    return 400 * 1_024 * 1_024
+                case .unlimited:
+                    return nil
+                }
+            }
+        }
 }
