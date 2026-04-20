@@ -30,6 +30,7 @@ Current Linux-oriented improvements include:
 - cross-platform hashing through `swift-crypto` instead of `CryptoKit`
 - a more portable default cache-directory strategy
 - public telemetry and session models that are easier to serialize and bridge
+- compressed telemetry parsing supports both `zlib` and `CZlib` module names, which differ across Swift toolchains/platforms
 
 Linux should be considered a realistic target for the core package, but it still needs ongoing validation in CI and broader runtime testing.
 
@@ -42,6 +43,7 @@ What is true today:
 - the Swift core is being prepared to be less Apple-specific
 - the package is being made friendlier to Android-oriented Swift toolchains
 - public data models are better suited for future bridge layers
+- recent core portability fixes include Android Swift 6.1/6.2/6.3 compatibility
 
 What is **not** done yet:
 
