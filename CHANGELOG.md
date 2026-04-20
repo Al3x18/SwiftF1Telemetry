@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.3] - 2026-04-20
+
+### Fixed
+
+- fixed Linux compatibility for compressed telemetry parsing by supporting both `zlib` and `CZlib` Swift module names in `RawEnvelopeParser`
+- fixed Android Swift build failure caused by direct `stderr` access in `Logger`; debug logging now writes through `FileHandle.standardError`
+- clarified Linux platform notes in documentation to explicitly mention `zlib`/`CZlib` module-name differences across toolchains
+
 ## [0.4.2] - 2026-04-16
 
 ### Changed
