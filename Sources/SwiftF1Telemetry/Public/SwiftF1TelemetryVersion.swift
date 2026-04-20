@@ -3,9 +3,9 @@ import Foundation
 /// Exposes the current library version string.
 ///
 /// ```swift
-/// print(SwiftF1TelemetryVersion.current) // "0.4.2"
+/// print(SwiftF1TelemetryVersion.current) // "0.4.3"
 /// ```
 public enum SwiftF1TelemetryVersion {
-    /// The semantic version of the library (e.g. `"0.4.2"`).
-    public static let current: String = "0.4.2"
+    /// The semantic version of the library (e.g. `"0.4.3"`).
+    public static let current: String = "0.4.3"
 }
