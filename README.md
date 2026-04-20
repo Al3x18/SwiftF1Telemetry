@@ -1,6 +1,12 @@
 <p align="center">
   <img src="assets/SwiftF1Icon.png" width="190" alt="SwiftF1Telemetry icon" /><br>
-  <b style="font-size:3em;"><u>SwiftF1Telemetry</u></b>
+  <b style="font-size:2.6em;"><u>SwiftF1Telemetry</u></b><br><br>
+  <a href="https://swiftpackageindex.com/Al3x18/SwiftF1Telemetry">
+    <img alt="Swift Version Compatibility" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FAl3x18%2FSwiftF1Telemetry%2Fbadge%3Ftype%3Dswift-versions" />
+  </a><br>
+  <a href="https://swiftpackageindex.com/Al3x18/SwiftF1Telemetry">
+    <img alt="Platform Compatibility" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FAl3x18%2FSwiftF1Telemetry%2Fbadge%3Ftype%3Dplatforms" />
+  </a>
 </p>
 
 `SwiftF1Telemetry` is a pure Swift package for loading, parsing, caching, and processing Formula 1 telemetry data directly on device.
