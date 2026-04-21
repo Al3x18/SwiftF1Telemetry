@@ -193,7 +193,7 @@ swift run f1-cli 2024 Monza Q LEC
 swift run f1-cli 2024 Monza Q Leclerc Sainz
 ```
 
-The discovery command uses the archive-backed years and sessions that are actually available to the library. If a year or session is not exposed by the official archive, the CLI now reports that clearly instead of surfacing a raw HTTP error.
+The discovery command uses the archive-backed years and sessions that are actually available to the library.
 
 ## Versioning
 
