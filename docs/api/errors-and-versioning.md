@@ -60,7 +60,7 @@ Discovery-related cases:
 
 ```swift
 public enum SwiftF1TelemetryVersion {
-    public static let current = "0.4.3"
+    public static let current = "0.4.4"
 }
 ```
 
