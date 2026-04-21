@@ -24,6 +24,7 @@ Current documented release: `0.4.3`
 Repository guides:
 
 - [Platform Support](docs/platform-support.md)
+- [SwiftUI Integration](docs/swiftui-integration.md)
 - [Contributing Guide](CONTRIBUTING.md)
 - [License](LICENSE)
 - [Changelog](CHANGELOG.md)
@@ -91,6 +92,31 @@ print("Lap:", lap.lapNumber)
 print("Lap time:", lap.lapTime ?? 0)
 print("Samples:", telemetry.samples.count)
 print("Speed series points:", telemetry.speedSeriesByDistance().count)
+```
+
+SwiftUI short example:
+
+```swift
+import SwiftUI
+import SwiftF1Telemetry
+
+struct QuickTelemetryView: View {
+    @State private var text = "Tap to load"
+    let client = F1Client()
+
+    var body: some View {
+        Button(text) {
+            Task {
+                do {
+                    let s = try await client.session(year: 2024, meeting: "Monza", session: .qualifying)
+                    guard let lap = try await s.fastestLap(driver: "16") else { text = "No lap"; return }
+                    let t = try await s.telemetry(for: lap)
+                    text = "Samples: \(t.samples.count)"
+                } catch { text = "Error: \(error)" }
+            }
+        }
+    }
+}
 ```
 
 You can also customize cache behavior:
