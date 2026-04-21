@@ -60,6 +60,8 @@ The long-term goal is to make high-quality F1 telemetry analysis possible in Swi
 
 The core package is also being prepared for non-Apple Swift toolchains, especially Linux and future Android-oriented Swift builds.
 
+At the moment, full Android/Flutter product integration is intentionally deferred: the implementation is still considered complex and would require a dedicated delivery phase.
+
 ## Package Layout
 
 ```text
@@ -256,8 +258,8 @@ Known gaps include:
 - generated/incomplete laps are not yet reconstructed as thoroughly
 - pit in/out and session interruption handling is still simpler than FastF1
 - some edge-case laps may still differ from FastF1 outside the validated path
-- Linux support still needs broader automated validation
-- Android support is still at the core-portability stage rather than app-integration stage
+- Linux support is expected to work, but still needs broader automated validation and runtime testing
+- Android/Flutter integration is deferred for now because the current bridge/plugin implementation path is still complex and time-consuming
 
 ## Legal Notes
 
@@ -280,8 +282,8 @@ Long-term priorities:
 
 - API stabilization
 - Linux CI coverage
-- Android bridge layer
-- Flutter plugin integration on top of native bridges
+- Android bridge layer (future dedicated phase)
+- Flutter plugin integration on top of native bridges (future dedicated phase)
 - richer comparison APIs beyond fastest-lap overlays
 - SwiftUI sample integration
 - broader telemetry processing utilities
