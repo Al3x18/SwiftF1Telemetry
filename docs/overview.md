@@ -21,6 +21,7 @@ This page is the technical deep dive. For installation, quick start, and day-to-
 - [Errors and Versioning](api/errors-and-versioning.md)
 - [Telemetry Data Guide](telemetry-data.md)
 - [Platform Support](platform-support.md)
+- [SwiftUI Integration](swiftui-integration.md)
 
 ## Why This Package Exists
 
