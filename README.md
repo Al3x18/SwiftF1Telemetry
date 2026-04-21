@@ -196,18 +196,18 @@ Detailed package usage and API guidance live in [docs/overview.md](docs/overview
 
 <div align="center">
   <a href="https://github.com/Al3x18/AppSwiftF1Example">
-    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/single-view.png" alt="AppSwiftF1Example Single Driver Screen" width="260" />
+    <img src="assets/example-app/single-view.png" alt="AppSwiftF1Example Single Driver Screen" width="220" />
   </a>
   <a href="https://github.com/Al3x18/AppSwiftF1Example">
-    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/compare-view.png" alt="AppSwiftF1Example Compare Drivers Screen" width="260" />
+    <img src="assets/example-app/compare-view.png" alt="AppSwiftF1Example Compare Drivers Screen" width="220" />
   </a>
 </div>
 
 <div align="center">
   <a href="https://github.com/Al3x18/AppSwiftF1Example">
-    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/single-demo.gif" alt="AppSwiftF1Example Single Driver Demo" width="260" />
+    <img src="assets/example-app/single-demo.gif" alt="AppSwiftF1Example Single Driver Demo" width="220" />
   </a>
   <a href="https://github.com/Al3x18/AppSwiftF1Example">
-    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/compare-demo.gif" alt="AppSwiftF1Example Compare Drivers Demo" width="260" />
+    <img src="assets/example-app/compare-demo.gif" alt="AppSwiftF1Example Compare Drivers Demo" width="220" />
   </a>
 </div>
