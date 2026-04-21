@@ -13,7 +13,7 @@
 
 The project is inspired by the behavior of [FastF1](https://github.com/theOehrly/Fast-F1), but it is not a pandas-style port. Instead, it provides a Swift-native API built around typed models, async/await, disk caching, telemetry processing, and chart-ready outputs.
 
-Current documented release: `0.4.3`
+Current documented release: `0.4.4`
 
 ## Documentation
 
@@ -57,7 +57,7 @@ Add the package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.3")
+    .package(url: "https://github.com/Al3x18/SwiftF1Telemetry.git", from: "0.4.4")
 ]
 ```
 
