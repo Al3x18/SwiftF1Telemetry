@@ -188,3 +188,26 @@ The repository includes:
 ## Project Scope And Roadmap
 
 Detailed package usage and API guidance live in [docs/overview.md](docs/overview.md).
+
+## iOS Example App
+
+> Looking for a complete iOS integration example?
+> Repository: [AppSwiftF1Example](https://github.com/Al3x18/AppSwiftF1Example)
+
+<div align="center">
+  <a href="https://github.com/Al3x18/AppSwiftF1Example">
+    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/single-view.png" alt="AppSwiftF1Example Single Driver Screen" width="260" />
+  </a>
+  <a href="https://github.com/Al3x18/AppSwiftF1Example">
+    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/compare-view.png" alt="AppSwiftF1Example Compare Drivers Screen" width="260" />
+  </a>
+</div>
+
+<div align="center">
+  <a href="https://github.com/Al3x18/AppSwiftF1Example">
+    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/single-demo.gif" alt="AppSwiftF1Example Single Driver Demo" width="260" />
+  </a>
+  <a href="https://github.com/Al3x18/AppSwiftF1Example">
+    <img src="https://raw.githubusercontent.com/Al3x18/AppSwiftF1Example/main/docs/media/compare-demo.gif" alt="AppSwiftF1Example Compare Drivers Demo" width="260" />
+  </a>
+</div>
