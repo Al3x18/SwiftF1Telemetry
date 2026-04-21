@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.4] - 2026-04-21
+
+### Changed
+
+- added simpler SwiftUI documentation examples in `docs/swiftui-integration.md` with minimal, copy-ready flows for single-driver telemetry loading and basic fastest-lap comparison
+- linked the new SwiftUI integration guide from `README.md` and `docs/overview.md` for faster discoverability
+- updated `SwiftF1TelemetryVersion.current` and docs release references to `0.4.4`
+
 ## [0.4.3] - 2026-04-20
 
 ### Fixed
