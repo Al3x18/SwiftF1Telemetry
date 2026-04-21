@@ -47,7 +47,8 @@ In progress:
 
 - Additional FastF1 parity for edge-case lap reconstruction
 - Broader cross-season and cross-session validation
-- Linux CI/runtime hardening and Android bridge work
+- Linux validation and test coverage (Linux support is expected to work but is not fully tested yet)
+- Android/Flutter integration assessment: currently complex and time-consuming, deferred to a future dedicated phase
 
 ## Installation
 
