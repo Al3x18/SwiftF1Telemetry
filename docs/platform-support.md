@@ -9,6 +9,8 @@ This document explains the current platform status of `SwiftF1Telemetry` and wha
 
 ## Current Status
 
+> Note: Android and Flutter integration is currently considered a complex, high-effort track. It is intentionally deferred to a future phase instead of being delivered in the current cycle.
+
 ### Apple platforms
 
 The package is actively developed and validated on Apple platforms.
@@ -32,7 +34,7 @@ Current Linux-oriented improvements include:
 - public telemetry and session models that are easier to serialize and bridge
 - compressed telemetry parsing supports both `zlib` and `CZlib` module names, which differ across Swift toolchains/platforms
 
-Linux should be considered a realistic target for the core package, but it still needs ongoing validation in CI and broader runtime testing.
+Linux should be considered a realistic target for the core package and is expected to work, but it has not been fully validated yet in CI and broader runtime testing.
 
 ### Android
 
@@ -55,7 +57,7 @@ What is **not** done yet:
 So the current status is best described as:
 
 - **Android-ready core work in progress**
-- **not yet Android app integration ready**
+- **not yet Android app integration ready (implementation deferred for now due to complexity)**
 
 ## What “Android-ready core” Means
 
@@ -100,7 +102,7 @@ That means:
 - on iOS/macOS, Flutter can call into native Swift code more directly
 - on Android, Flutter would still depend on a Kotlin/Java bridge, which would in turn depend on an Android-compatible Swift layer
 
-So Flutter support depends on the same Android native bridge work described above.
+So Flutter support depends on the same Android native bridge work described above, and is also deferred for now because the end-to-end implementation remains complex and time-consuming.
 
 ## Recommended Architecture Path
 
@@ -123,6 +125,6 @@ This keeps the Swift package reusable in:
 Today:
 
 - Apple platforms: supported
-- Linux: core portability improving, needs more validation
-- Android: core preparation in progress, integration layer still missing
-- Flutter: feasible later, but depends on native platform bridges
+- Linux: expected to work, but still not fully tested/validated
+- Android: core preparation in progress, full app integration deferred to a future phase
+- Flutter: feasible later, and currently deferred together with Android bridge work
