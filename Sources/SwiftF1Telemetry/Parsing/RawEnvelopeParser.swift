@@ -1,11 +1,5 @@
 import Foundation
-#if canImport(zlib)
-import zlib
-#elseif canImport(CZlib)
 import CZlib
-#else
-#error("SwiftF1Telemetry requires a zlib module (zlib or CZlib) to decode compressed telemetry streams.")
-#endif
 
 struct RawJSONStreamLine {
     let sessionTime: TimeInterval
