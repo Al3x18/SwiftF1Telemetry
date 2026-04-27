@@ -7,6 +7,14 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.5] - 2026-04-27
+
+### Changed
+
+- simplified zlib import path by using only `CZlib` in `RawEnvelopeParser` for more consistent cross-platform builds
+- added SwiftPM `systemLibrary` integration for `CZlib` (`module.modulemap`) so Linux and WASM builds can resolve zlib reliably
+- updated `SwiftF1TelemetryVersion.current` and docs release references to `0.4.5`
+
 ## [0.4.4] - 2026-04-21
 
 ### Changed
