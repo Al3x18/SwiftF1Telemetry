@@ -32,7 +32,7 @@ Current Linux-oriented improvements include:
 - cross-platform hashing through `swift-crypto` instead of `CryptoKit`
 - a more portable default cache-directory strategy
 - public telemetry and session models that are easier to serialize and bridge
-- compressed telemetry parsing supports both `zlib` and `CZlib` module names, which differ across Swift toolchains/platforms
+- compressed telemetry parsing uses a SwiftPM `systemLibrary` target (`CZlib`) with a small C shim header so Linux/WASM toolchains can resolve zlib consistently
 
 Linux should be considered a realistic target for the core package and is expected to work, but it has not been fully validated yet in CI and broader runtime testing.
 
