@@ -8,18 +8,18 @@ import Testing
 }
 
 @Test func cacheModeUnlimitedHasNoSizeLimit() {
-    #expect(F1Client.Configuration.CacheMode.unlimited.maxSizeInBytes == nil)
+    #expect(F1Client.CacheMode.unlimited.maxSizeInBytes == nil)
 }
 
 @Test func cacheModeNoCacheReportsZeroBytes() {
-    #expect(F1Client.Configuration.CacheMode.noCache.maxSizeInBytes == 0)
+    #expect(F1Client.CacheMode.noCache.maxSizeInBytes == 0)
 }
 
 @Test func cacheModeBoundedModesExposeExpectedLimits() {
-    #expect(F1Client.Configuration.CacheMode.minimum.maxSizeInBytes == 50 * 1_024 * 1_024)
-    #expect(F1Client.Configuration.CacheMode.medium.maxSizeInBytes == 100 * 1_024 * 1_024)
-    #expect(F1Client.Configuration.CacheMode.large.maxSizeInBytes == 200 * 1_024 * 1_024)
-    #expect(F1Client.Configuration.CacheMode.extraLarge.maxSizeInBytes == 400 * 1_024 * 1_024)
+    #expect(F1Client.CacheMode.minimum.maxSizeInBytes == 50 * 1_024 * 1_024)
+    #expect(F1Client.CacheMode.medium.maxSizeInBytes == 100 * 1_024 * 1_024)
+    #expect(F1Client.CacheMode.large.maxSizeInBytes == 200 * 1_024 * 1_024)
+    #expect(F1Client.CacheMode.extraLarge.maxSizeInBytes == 400 * 1_024 * 1_024)
 }
 
 @Test func diskCacheWithZeroLimitEvictsAnySavedFile() async throws {
