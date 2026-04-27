@@ -15,10 +15,19 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
     ],
     targets: [
+        .systemLibrary(
+            name: "CZlib",
+            pkgConfig: "zlib",
+            providers: [
+                .brew(["zlib"]),
+                .apt(["zlib1g-dev"]),
+            ]
+        ),
         .target(
             name: "SwiftF1Telemetry",
             dependencies: [
                 .product(name: "Crypto", package: "swift-crypto"),
+                "CZlib",
             ]
         ),
         .executableTarget(
